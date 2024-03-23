@@ -1,0 +1,22 @@
+{
+    "fmt": {
+        "indentWidth": 4,
+        "lineWidth": 120
+    },
+    "tasks": {
+        "test": "deno fmt && deno lint && deno check src/mod.ts && deno test -A",
+        "run": "deno run -A --location http://127.0.0.1/ src/mod.ts"
+    },
+    "imports": {
+        "zod": "https://deno.land/x/zod@v3.22.4/mod.ts",
+        "lock": "https://deno.land/x/simple_promise_lock@v2.2.1/deno/lock.ts",
+        "@preact/signals": "https://esm.sh/@preact/signals@1.2.2/"
+    },
+    "lint": {
+        "rules": {
+            "exclude": [
+                "no-inferrable-types"
+            ]
+        }
+    }
+}
