@@ -17,7 +17,25 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-export { RPCServer } from "./server/server.ts";
-export { RPCClient, RPCClientImpl } from "./client/client.ts";
-export { attach_websocket } from "./helper/attach_websocket.ts";
-export { WebsocketClient } from "./helper/websocket_client.ts";
+import { RPCConnection } from "../server/conn.ts";
+import { RPCServer } from "../server/server.ts";
+import { attach_websocket } from "./attach_websocket.ts";
+
+export function upgrade_websocket(server: RPCServer, req: Request) {
+    const { socket, response } = Deno.upgradeWebSocket(req);
+    attach_websocket(new RPCConnection(server), socket);
+    return response;
+}
+
+export function serve_websocket(port: number) {
+    const rpc = new RPCServer();
+    const http = Deno.serve({
+        port,
+    }, (request) => {
+        return upgrade_websocket(rpc, request);
+    });
+    return {
+        rpc,
+        http,
+    };
+}

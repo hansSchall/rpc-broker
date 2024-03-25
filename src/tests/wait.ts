@@ -17,7 +17,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-export { RPCServer } from "./server/server.ts";
-export { RPCClient, RPCClientImpl } from "./client/client.ts";
-export { attach_websocket } from "./helper/attach_websocket.ts";
-export { WebsocketClient } from "./helper/websocket_client.ts";
+export function wait(time: number) {
+    return new Promise<void>((resolve) => {
+        setTimeout(() => {
+            resolve();
+        }, time);
+    });
+}

@@ -1,6 +1,26 @@
+/**
+ * @license GPL-3.0-or-later
+ * RPC-Broker
+ * 
+ * Copyright (C) 2024 Hans Schallmoser
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+import { Mutable } from "../helper/mutable.ts";
 import { Call, SchemaI, SchemaO, SignalO } from "../schema.ts";
 import { RPCMod } from "./call.ts";
-import { AGGREGATION_TIMEOUT, RPCClient } from "./client.ts";
+import { RPCClient } from "./client.ts";
 import { RPCSignal } from "./signal.ts";
 
 export class RPCSession {
@@ -13,6 +33,8 @@ export class RPCSession {
         for (const [, signal] of client._signals) {
             signal._reset();
         }
+        client._active_session.value?.dispose();
+        client._active_session.value = this;
     }
     readonly uid = crypto.randomUUID();
     public label: string = this.uid;
@@ -35,7 +57,7 @@ export class RPCSession {
         if (this.sender) {
             this.sender.enqueue(data);
         } else {
-            console.log();
+            console.error(`[FailedToSend]`, data);
         }
     }
     private flush() {
@@ -43,11 +65,21 @@ export class RPCSession {
             clearTimeout(this.timeout);
             this.timeout = null;
         }
-        this.send({
-            m: this.mod_subscriptions.size ? this.mod_subscriptions : undefined,
-            c: this.calls.length ? this.calls : undefined,
-            s: this.signals.size ? this.signals : undefined,
-        });
+        const data: Mutable<SchemaO> = {
+            m: this.mod_subscriptions,
+            c: this.calls,
+            s: this.signals,
+        };
+        if (this.mod_subscriptions.size === 0) {
+            delete data.m;
+        }
+        if (this.calls.length === 0) {
+            delete data.c;
+        }
+        if (this.signals.size === 0) {
+            delete data.s;
+        }
+        this.send(data);
         this.calls.length = 0;
         this.signals.clear();
         this.mod_subscriptions.clear();
@@ -58,15 +90,17 @@ export class RPCSession {
             this.timeout = setTimeout(() => {
                 this.timeout = null;
                 this.flush();
-            }, AGGREGATION_TIMEOUT);
+            }, this.client.aggregate);
         }
     }
     private mod_subscriptions = new Map<string, boolean>();
     public push_mod_subscribe(id: string) {
         this.mod_subscriptions.set(id, true);
+        this.push();
     }
     public push_mod_unsubscribe(id: string) {
         this.mod_subscriptions.set(id, false);
+        this.push();
     }
     private calls = Array<Call>();
     public push_call(call: Call) {
@@ -112,6 +146,7 @@ export class RPCSession {
     public disposed = false;
     dispose() {
         this.disposed = true;
+        this.client._active_session.value = null;
         for (const [, signal] of this.client._signals) {
             signal._off();
         }

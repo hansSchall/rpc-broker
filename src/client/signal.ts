@@ -1,8 +1,25 @@
+/**
+ * @license GPL-3.0-or-later
+ * RPC-Broker
+ * 
+ * Copyright (C) 2024 Hans Schallmoser
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import { SignalI, SignalO } from "../schema.ts";
-import { RPCSession } from "./session.ts";
 import { RPCClient } from "./client.ts";
-import { batch, computed, effect, Signal, signal } from "@preact/signals";
-import { AGGREGATION_TIMEOUT } from "./client.ts";
+import { batch, computed, effect, ReadonlySignal, signal } from "../deps.ts";
 import { decode, encode } from "../lib/object_stream.ts";
 
 export const SIGNAL_INVALID = Symbol("SIGNAL_INVALID");
@@ -12,6 +29,12 @@ export class RPCSignal {
     private constructor(readonly id: string, readonly client: RPCClient) {
         effect(() => {
             this.update();
+        });
+
+        effect(() => {
+            this.send_src({
+                s: this.requested.value,
+            });
         });
     }
 
@@ -61,6 +84,7 @@ export class RPCSignal {
 
     private had_signal = false;
     private num_requests = signal(0);
+    private requested = computed(() => this.num_requests.value > 0);
     private remote_value = signal<unknown>(SIGNAL_INVALID);
     private remote_valid = signal<boolean>(false);
     private holding_remote = signal<boolean>(false);
@@ -80,14 +104,18 @@ export class RPCSignal {
         return () => {
             setTimeout(() => {
                 this.num_requests.value--;
-            }, AGGREGATION_TIMEOUT);
+            }, this.client.aggregate);
         };
     }
 
-    private transmitter = signal<Signal<unknown> | null>(null);
+    private transmitter = signal<ReadonlySignal<unknown> | null>(null);
 
-    private send_src(data: SignalO, src?: RPCSession) {
-        (src ?? this.client._active_session.value)?.push_signal(this.id, data, () => null);
+    public transmit(value: ReadonlySignal | null) {
+        this.transmitter.value = value;
+    }
+
+    private send_src(data: SignalO) {
+        this.client._active_session.value?.push_signal(this.id, data, () => null);
     }
 
     public static get(client: RPCClient, id: string): RPCSignal {

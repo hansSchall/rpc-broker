@@ -1,6 +1,26 @@
+/**
+ * @license GPL-3.0-or-later
+ * RPC-Broker
+ * 
+ * Copyright (C) 2024 Hans Schallmoser
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+import { Mutable } from "../helper/mutable.ts";
 import { Call, SchemaI, SchemaO, SignalO } from "../schema.ts";
 import { RPCMod } from "./call.ts";
-import { AGGREGATION_TIMEOUT, RPCServer } from "./server.ts";
+import { RPCServer } from "./server.ts";
 import { RPCSignal } from "./signal.ts";
 
 export class RPCConnection {
@@ -21,14 +41,16 @@ export class RPCConnection {
     });
     readonly writable = new WritableStream<SchemaI>({
         write: (chunk) => {
+            // console.log(`[Server] [RX]`, chunk);
             this.recv(chunk);
         },
     });
     private send(data: SchemaO) {
         if (this.sender) {
+            // console.log(`[Server] [TX]`, data);
             this.sender.enqueue(data);
         } else {
-            console.log();
+            console.log(`[FailedToSend]`, data);
         }
     }
     private flush() {
@@ -36,10 +58,17 @@ export class RPCConnection {
             clearTimeout(this.timeout);
             this.timeout = null;
         }
-        this.send({
-            c: this.calls.length ? this.calls : undefined,
-            s: this.signals.size ? this.signals : undefined,
-        });
+        const data: Mutable<SchemaO> = {
+            c: this.calls,
+            s: this.signals,
+        };
+        if (this.calls.length === 0) {
+            delete data.c;
+        }
+        if (this.signals.size === 0) {
+            delete data.s;
+        }
+        this.send(data);
         this.calls.length = 0;
         this.signals.clear();
     }
@@ -49,7 +78,7 @@ export class RPCConnection {
             this.timeout = setTimeout(() => {
                 this.timeout = null;
                 this.flush();
-            }, AGGREGATION_TIMEOUT);
+            }, this.server.aggregate);
         }
     }
     private calls = Array<Call>();
