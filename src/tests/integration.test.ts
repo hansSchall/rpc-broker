@@ -1,14 +1,14 @@
 /**
  * @license GPL-3.0-or-later
  * RPC-Broker
- * 
+ *
  * Copyright (C) 2024 Hans Schallmoser
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -24,9 +24,9 @@ import { effect, signal } from "../deps.ts";
 import { SIGNAL_INVALID } from "../client/signal.ts";
 
 function assertCall(timeout = 500) {
-    let res = () => { };
+    let res = () => {};
     let to = 0;
-    const wait = new Promise<void>(resolve => {
+    const wait = new Promise<void>((resolve) => {
         to = setTimeout(() => {
             resolve();
         }, timeout);
@@ -44,7 +44,7 @@ function assertCall(timeout = 500) {
         finish: async () => {
             await wait;
             assertEquals(calls, 1);
-        }
+        },
     };
 }
 
@@ -66,7 +66,7 @@ Deno.test("RPC Call", async () => {
             });
 
             clientA.mod("foo").call("bar", {
-                foo: 5
+                foo: 5,
             });
         }
     });
@@ -96,4 +96,3 @@ Deno.test("RPC Signal", async () => {
 
     await call.finish();
 });
-

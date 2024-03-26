@@ -1,17 +1,30 @@
 {
     "fmt": {
         "indentWidth": 4,
-        "lineWidth": 120
+        "lineWidth": 120,
+        "exclude": [
+            "npm"
+        ]
+    },
+    "compilerOptions": {
+        "noImplicitOverride": true
     },
     "tasks": {
         "test": "deno fmt && deno lint && deno check src/mod.ts && deno test -A",
-        "run": "deno run -A --location http://127.0.0.1/ src/mod.ts"
+        "run": "deno run -A --location http://127.0.0.1/ src/mod.ts",
+        "npm": "deno run -A scripts/build_npm.ts"
+    },
+    "imports": {
+        "@deno/dnt": "jsr:@deno/dnt@^0.41.0"
     },
     "lint": {
         "rules": {
             "exclude": [
                 "no-inferrable-types"
             ]
-        }
+        },
+        "exclude": [
+            "npm"
+        ]
     }
 }

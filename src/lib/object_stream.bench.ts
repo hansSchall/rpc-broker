@@ -1,14 +1,14 @@
 /**
  * @license GPL-3.0-or-later
  * RPC-Broker
- * 
+ *
  * Copyright (C) 2024 Hans Schallmoser
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -27,7 +27,7 @@ Deno.bench(`Encode MsgPackr`, {
     encode({
         a: 45,
         b: {
-            foo: "test"
+            foo: "test",
         },
         c: null,
     });
@@ -40,7 +40,7 @@ Deno.bench(`Encode JSON`, {
     JSON.stringify({
         a: 45,
         b: {
-            foo: "test"
+            foo: "test",
         },
         c: null,
     });
@@ -52,7 +52,7 @@ Deno.bench(`Encode Sia`, {
     sia({
         a: 45,
         b: {
-            foo: "test"
+            foo: "test",
         },
         c: null,
     });
@@ -65,7 +65,7 @@ Deno.bench(`Encode CBOR`, {
     enc.encode({
         a: 45,
         b: {
-            foo: "test"
+            foo: "test",
         },
         c: null,
     });
@@ -77,7 +77,7 @@ Deno.bench(`Decode MsgPackr`, {
     decode(encode({
         a: 45,
         b: {
-            foo: "test"
+            foo: "test",
         },
         c: null,
     }));
@@ -90,7 +90,7 @@ Deno.bench(`Decode JSON`, {
     JSON.parse(JSON.stringify({
         a: 45,
         b: {
-            foo: "test"
+            foo: "test",
         },
         c: null,
     }));
@@ -102,7 +102,7 @@ Deno.bench(`Decode Sia`, {
     desia(sia({
         a: 45,
         b: {
-            foo: "test"
+            foo: "test",
         },
         c: null,
     }));
@@ -115,7 +115,7 @@ Deno.bench(`Decode CBOR`, {
     dec.decode(enc.encode({
         a: 45,
         b: {
-            foo: "test"
+            foo: "test",
         },
         c: null,
     }));

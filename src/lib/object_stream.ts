@@ -1,14 +1,14 @@
 /**
  * @license GPL-3.0-or-later
  * RPC-Broker
- * 
+ *
  * Copyright (C) 2024 Hans Schallmoser
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -17,7 +17,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Packr, Unpackr, concat } from "../deps.ts";
+import { concat, Packr, Unpackr } from "../deps.ts";
 
 const packr = new Packr();
 const unpackr = new Unpackr();
@@ -26,7 +26,7 @@ export function encode<T = unknown>(value: T): Uint8Array {
     return packr.pack(value);
 }
 
-export function decode(chunk: ArrayLike<number>): unknown {
+export function decode(chunk: Uint8Array): unknown {
     return unpackr.unpack(chunk);
 }
 
@@ -55,7 +55,8 @@ export class UnpackrStream extends TransformStream<Uint8Array, unknown> {
                 let values: unknown[] = [];
                 try {
                     values = this.unpackr.unpackMultiple(chunk)!;
-                } catch (err) {
+                    // deno-lint-ignore no-explicit-any
+                } catch (err: any) {
                     if (err.incomplete) {
                         this.incompleteBuffer = chunk.slice(err.lastPosition);
                         values = err.values ?? [];
