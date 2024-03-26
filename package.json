@@ -1,0 +1,8 @@
+{
+  "name": "rpc-broker",
+  "version": "1.0.0",
+  "main": "src/mod.ts",
+  "repository": "https://github.com/hansSchall/rpc-broker.git",
+  "author": "Hans Schallmoser <99032404+hansSchall@users.noreply.github.com>",
+  "license": "GPL-3.0-or-later"
+}
