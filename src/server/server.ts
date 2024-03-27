@@ -23,6 +23,10 @@ import { RPCSignal } from "./signal.ts";
 import { attach_direct } from "../helper/attach_direct.ts";
 import { RPCClient } from "../client/client.ts";
 
+export * from "./call.ts";
+export * from "./conn.ts";
+export * from "./signal.ts";
+
 export class RPCServer {
     constructor(readonly aggregate = 1) {
         attach_direct(this, this.client);

@@ -24,7 +24,7 @@ import { decode, encode } from "../lib/object_stream.ts";
 import { SignalI, SignalO } from "../schema.ts";
 import { merge_signal } from "../server/merge_signal.ts";
 import { RPCHub } from "./hub.ts";
-import { RPCHubClient } from "./hubclient.ts";
+import { RPCHubClient } from "./hubClient.ts";
 
 export class RPCHubSignal {
     private constructor(readonly hub: RPCHub, readonly id: string) {

@@ -20,7 +20,11 @@
 import { RPCClient } from "../mod.ts";
 import { RPCHubMod } from "./hubMod.ts";
 import { RPCHubSignal } from "./hubSignal.ts";
-import { RPCHubClient } from "./hubclient.ts";
+import { RPCHubClient } from "./hubClient.ts";
+
+export * from "./hubMod.ts";
+export * from "./hubSignal.ts";
+export * from "./hubClient.ts";
 
 export class RPCHub extends RPCClient {
     readonly clients = new Set<RPCHubClient>();

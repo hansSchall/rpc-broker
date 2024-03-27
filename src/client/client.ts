@@ -23,6 +23,11 @@ import { RPCSignal } from "./signal.ts";
 import { computed, signal } from "../deps.ts";
 import { ClientHooks } from "./client_hooks.ts";
 
+export * from "./call.ts";
+export * from "./session.ts";
+export * from "./signal.ts";
+export * from "./client_hooks.ts";
+
 export interface RPCClientWrapper {
     readonly client: RPCClient;
 }

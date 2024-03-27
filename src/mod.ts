@@ -17,7 +17,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-export { RPCServer } from "./server/server.ts";
-export { RPCClient, RPCClientImpl } from "./client/client.ts";
+export { RPCConnection, RPCServer } from "./server/server.ts";
+export * as server from "./server/server.ts";
+export { RPCClient, RPCClientImpl, RPCSession } from "./client/client.ts";
+export * as client from "./client/client.ts";
+export { RPCHub, RPCHubClient } from "./hub/hub.ts";
+export * as hub from "./hub/hub.ts";
+
+export { attach_direct, attach_direct_to_hub } from "./helper/attach_direct.ts";
 export { attach_websocket } from "./helper/attach_websocket.ts";
+export type { Mutable } from "./helper/mutable.ts";
 export { WebsocketClient } from "./helper/websocket_client.ts";
+
+export { decode, encode, PackrStream, UnpackrStream } from "./lib/object_stream.ts";
+export { StreamedWebSocket } from "./lib/websocket_stream.ts";
+export { ZodStream } from "./lib/zod_stream.ts";
