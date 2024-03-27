@@ -17,11 +17,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-export { z } from "https://esm.sh/zod@v3.22.4";
-export * from "npm:@preact/signals";
-export { effect } from "npm:@preact/signals";
-export * from "https://esm.sh/preact@10.20.1/hooks";
-export { Packr, Unpackr } from "https://esm.sh/msgpackr@1.10.1";
-export { concat } from "https://deno.land/std@0.184.0/bytes/concat.ts";
+import { RPCClient } from "../mod.ts";
+import { RPCHubMod } from "./hubMod.ts";
+import { RPCHubSignal } from "./hubSignal.ts";
+import { RPCHubClient } from "./hubclient.ts";
 
-export const EN_LOG = false;
+export class RPCHub extends RPCClient {
+    readonly clients = new Set<RPCHubClient>();
+    readonly _hub_mods = new Map<string, RPCHubMod>();
+    readonly _hub_signals = new Map<string, RPCHubSignal>();
+}

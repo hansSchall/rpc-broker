@@ -17,6 +17,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { EN_LOG } from "../deps.ts";
 import { Mutable } from "../helper/mutable.ts";
 import { Call, SchemaI, SchemaO, SignalO } from "../schema.ts";
 import { RPCMod } from "./call.ts";
@@ -28,7 +29,7 @@ export class RPCConnection {
         server.clients.add(this);
     }
     readonly uid = crypto.randomUUID();
-    public label: string = this.uid;
+    public label: string = this.uid.substring(0, 6);
 
     private sender?: ReadableStreamDefaultController<SchemaO>;
     readonly readable = new ReadableStream<SchemaO>({
@@ -41,13 +42,17 @@ export class RPCConnection {
     });
     readonly writable = new WritableStream<SchemaI>({
         write: (chunk) => {
-            // console.log(`[Server] [RX]`, chunk);
+            if (EN_LOG) {
+                console.log(`[Server ${this.label}] [RX]`, chunk);
+            }
             this.recv(chunk);
         },
     });
     private send(data: SchemaO) {
         if (this.sender) {
-            // console.log(`[Server] [TX]`, data);
+            if (EN_LOG) {
+                console.log(`[Server ${this.label}] [TX]`, data);
+            }
             this.sender.enqueue(data);
         } else {
             console.log(`[FailedToSend]`, data);
@@ -99,8 +104,8 @@ export class RPCConnection {
             }
         } else {
             this.signals.set(id, signal);
-            this.push();
         }
+        this.push();
     }
 
     private recv(data: SchemaI) {

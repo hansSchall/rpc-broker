@@ -38,19 +38,19 @@ export class RPCClient extends ClientHooks implements RPCClientWrapper {
     override readonly client: RPCClient = this;
 
     public signal(id: string) {
-        return RPCSignal.get(this, id);
+        return RPCSignal.get(this.client, id);
     }
 
     public mod(id: string) {
-        return RPCMod.get(this, id);
+        return RPCMod.get(this.client, id);
     }
 
     public subscribe(id: string, cb: RPCCallback) {
-        return RPCMod.get(this, id).subscribe(cb);
+        return RPCMod.get(this.client, id).subscribe(cb);
     }
 
     public call(id: string, sub: string, arg?: unknown) {
-        return RPCMod.get(this, id).call(sub, arg);
+        return RPCMod.get(this.client, id).call(sub, arg);
     }
 }
 

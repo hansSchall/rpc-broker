@@ -19,26 +19,18 @@
 
 import { EN_LOG } from "../deps.ts";
 import { Mutable } from "../helper/mutable.ts";
+import { decode } from "../lib/object_stream.ts";
 import { Call, SchemaI, SchemaO, SignalO } from "../schema.ts";
-import { RPCMod } from "./call.ts";
-import { RPCClient } from "./client.ts";
-import { RPCSignal } from "./signal.ts";
+import { RPCHub } from "./hub.ts";
+import { RPCHubMod } from "./hubMod.ts";
+import { RPCHubSignal } from "./hubSignal.ts";
 
-export class RPCSession {
-    constructor(readonly client: RPCClient) {
-        for (const [id, mod] of client._mods) {
-            if (mod._subscribe) {
-                this.mod_subscriptions.set(id, true);
-            }
-        }
-        for (const [, signal] of client._signals) {
-            signal._reset();
-        }
-        client._active_session.value?.dispose();
-        client._active_session.value = this;
+export class RPCHubClient {
+    constructor(readonly hub: RPCHub) {
+        hub.clients.add(this);
     }
     readonly uid = crypto.randomUUID();
-    public label: string = this.uid.substring(0, 6);
+    public label: string = this.uid;
 
     private sender?: ReadableStreamDefaultController<SchemaO>;
     readonly readable = new ReadableStream<SchemaO>({
@@ -52,7 +44,7 @@ export class RPCSession {
     readonly writable = new WritableStream<SchemaI>({
         write: (chunk) => {
             if (EN_LOG) {
-                console.log(`[Client ${this.label}] [RX]`, chunk);
+                console.log(`[HubClient] [RX]`, chunk);
             }
             this.recv(chunk);
         },
@@ -60,11 +52,11 @@ export class RPCSession {
     private send(data: SchemaO) {
         if (this.sender) {
             if (EN_LOG) {
-                console.log(`[Client ${this.label}] [TX]`, data);
+                console.log(`[HubClient] [TX]`, data);
             }
             this.sender.enqueue(data);
         } else {
-            console.error(`[FailedToSend]`, data);
+            console.log(`[FailedToSend]`, data);
         }
     }
     private flush() {
@@ -73,13 +65,9 @@ export class RPCSession {
             this.timeout = null;
         }
         const data: Mutable<SchemaO> = {
-            m: this.mod_subscriptions,
             c: this.calls,
             s: this.signals,
         };
-        if (this.mod_subscriptions.size === 0) {
-            delete data.m;
-        }
         if (this.calls.length === 0) {
             delete data.c;
         }
@@ -89,7 +77,6 @@ export class RPCSession {
         this.send(data);
         this.calls.length = 0;
         this.signals.clear();
-        this.mod_subscriptions.clear();
     }
     private timeout: null | number = null;
     private push() {
@@ -97,17 +84,8 @@ export class RPCSession {
             this.timeout = setTimeout(() => {
                 this.timeout = null;
                 this.flush();
-            }, this.client.aggregate);
+            }, this.hub.client.aggregate);
         }
-    }
-    private mod_subscriptions = new Map<string, boolean>();
-    public push_mod_subscribe(id: string) {
-        this.mod_subscriptions.set(id, true);
-        this.push();
-    }
-    public push_mod_unsubscribe(id: string) {
-        this.mod_subscriptions.set(id, false);
-        this.push();
     }
     private calls = Array<Call>();
     public push_call(call: Call) {
@@ -123,10 +101,10 @@ export class RPCSession {
                 this.signals.set(id, merged);
             } else {
                 this.flush();
-                this.signals.set(id, { ...signal });
+                this.signals.set(id, signal);
             }
         } else {
-            this.signals.set(id, { ...signal });
+            this.signals.set(id, signal);
         }
         this.push();
     }
@@ -135,17 +113,25 @@ export class RPCSession {
         if (data.l) {
             this.label = data.l ?? this.uid;
         }
-
+        if (data.m) {
+            for (const [id, subscribe] of data.m) {
+                const mod = RPCHubMod.get(this.hub, id);
+                if (subscribe) {
+                    mod.subscribe(this);
+                } else {
+                    mod.unsubscribe(this);
+                }
+            }
+        }
         if (data.c) {
             for (const { m, s, a } of data.c) {
-                const mod = RPCMod.get(this.client, m);
-                mod._dispatch(s, a);
+                this.hub.client.call(m, s, a && decode(a));
             }
         }
         if (data.s) {
             for (const [id, $] of data.s) {
-                const sig = RPCSignal.get(this.client, id);
-                sig._handle($);
+                const sig = RPCHubSignal.get(this.hub, id);
+                sig.handle($, this);
             }
         }
     }
@@ -153,9 +139,8 @@ export class RPCSession {
     public disposed = false;
     dispose() {
         this.disposed = true;
-        this.client._active_session.value = null;
-        for (const [, signal] of this.client._signals) {
-            signal._off();
-        }
+        this.hub.clients.delete(this);
+        RPCHubMod.unsubscribeAll(this);
+        RPCHubSignal.drop_conn(this);
     }
 }

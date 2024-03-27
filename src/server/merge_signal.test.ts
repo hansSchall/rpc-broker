@@ -44,6 +44,26 @@ Deno.test("merge_signal.hold", () => {
     assertHold(false, false, false);
 });
 
-Deno.test("merge_signal.update", () => {
-    // TODO
+Deno.test("merge_signal.subscribe", () => {
+    function assertSubscribe(a: boolean | undefined, b: boolean | undefined, exp: boolean | undefined | null) {
+        const merged = merge_signal({ s: a }, { s: b });
+        if (exp === null) {
+            assertEquals(merged, null);
+        } else {
+            if (merged === null) {
+                throw new AssertionError(`merge unexpectedly failed`);
+            }
+            assertObjectMatch(merged, { s: exp, v: undefined, d: undefined, h: undefined });
+        }
+    }
+
+    assertSubscribe(undefined, undefined, undefined);
+    assertSubscribe(true, undefined, true);
+    assertSubscribe(false, undefined, false);
+    assertSubscribe(undefined, true, true);
+    assertSubscribe(undefined, false, false);
+    assertSubscribe(true, true, true);
+    assertSubscribe(true, false, null);
+    assertSubscribe(false, true, null);
+    assertSubscribe(false, false, false);
 });

@@ -20,8 +20,8 @@
 import { SignalO } from "../schema.ts";
 
 export function merge_signal(
-    { v: a_value, d: a_drop, h: a_hold }: SignalO,
-    { v: b_value, d: b_drop, h: b_hold }: SignalO,
+    { v: a_value, d: a_drop, h: a_hold, s: a_sub }: SignalO,
+    { v: b_value, d: b_drop, h: b_hold, s: b_sub }: SignalO,
 ): SignalO | null {
     let r_hold: boolean | undefined = undefined;
     if (a_hold === b_hold) {
@@ -33,6 +33,21 @@ export function merge_signal(
         } else if (b_hold === undefined) {
             // a_hold !== undefined
             r_hold = a_hold;
+        } else {
+            return null;
+        }
+    }
+
+    let r_sub: boolean | undefined = undefined;
+    if (a_sub === b_sub) {
+        r_sub = a_sub;
+    } else {
+        if (a_sub === undefined) {
+            // b_hold !== undefined
+            r_sub = b_sub;
+        } else if (b_sub === undefined) {
+            // a_hold !== undefined
+            r_sub = a_sub;
         } else {
             return null;
         }
@@ -61,5 +76,6 @@ export function merge_signal(
         v: r_value,
         d: r_drop,
         h: r_hold,
+        s: r_sub,
     };
 }
