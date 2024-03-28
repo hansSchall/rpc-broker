@@ -17,24 +17,22 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import type { z } from "../deps.ts";
-import { Schema, type SchemaI } from "../schema.ts";
+import { PackrStream } from "../mod.ts";
+import { UnpackrStream } from "../mod.ts";
+import { type RPCClient, RPCSession, Schema, ZodStream } from "../mod.ts";
 
-export class ZodStream<Schema extends z.ZodType> extends TransformStream<unknown, z.infer<Schema>> {
-    constructor(readonly schema: Schema) {
-        super({
-            transform: (chunk, controller) => {
-                const parsed = schema.safeParse(chunk);
-                if (parsed.success) {
-                    controller.enqueue(parsed.data);
-                } else {
-                    console.error(`[ZodStream] [InvalidData]`, parsed.error);
-                }
-            },
-        });
-    }
-}
+export function attach_uplink(client: RPCClient, uplink: {
+    readonly readable: ReadableStream<Uint8Array>;
+    readonly writable: WritableStream<Uint8Array>;
+}): {
+    session: RPCSession;
+} {
+    const session = new RPCSession(client);
 
-export function check_stream(): TransformStream<unknown, SchemaI> {
-    return new ZodStream(Schema);
+    uplink.readable.pipeThrough(new UnpackrStream()).pipeThrough(new ZodStream(Schema)).pipeTo(session.writable);
+    session.readable.pipeThrough(new PackrStream()).pipeTo(uplink.writable);
+
+    return {
+        session,
+    };
 }

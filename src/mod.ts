@@ -25,10 +25,13 @@ export { RPCHub, RPCHubClient } from "./hub/hub.ts";
 export * as hub from "./hub/hub.ts";
 
 export { attach_direct, attach_direct_to_hub } from "./helper/attach_direct.ts";
+export { attach_uplink } from "./helper/attach_uplink.ts";
 export { attach_websocket } from "./helper/attach_websocket.ts";
 export type { Mutable } from "./helper/mutable.ts";
 export { WebsocketClient } from "./helper/websocket_client.ts";
 
 export { decode, encode, PackrStream, UnpackrStream } from "./lib/object_stream.ts";
 export { StreamedWebSocket } from "./lib/websocket_stream.ts";
-export { ZodStream } from "./lib/zod_stream.ts";
+export { check_stream, ZodStream } from "./lib/zod_stream.ts";
+export { Schema } from "./schema.ts";
+export type { SchemaI, SchemaO, SchemaStatic } from "./schema.ts";
