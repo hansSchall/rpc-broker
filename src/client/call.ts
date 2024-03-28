@@ -18,7 +18,7 @@
  */
 
 import { decode, encode } from "../lib/object_stream.ts";
-import { RPCClient } from "./client.ts";
+import type { RPCClient } from "./client.ts";
 
 export interface RPCCallback {
     (sub: string, arg: unknown): void;

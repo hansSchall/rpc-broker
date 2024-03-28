@@ -18,10 +18,10 @@
  */
 
 import { EN_LOG } from "../deps.ts";
-import { Mutable } from "../helper/mutable.ts";
-import { Call, SchemaI, SchemaO, SignalO } from "../schema.ts";
+import type { Mutable } from "../helper/mutable.ts";
+import type { Call, SchemaI, SchemaO, SignalO } from "../schema.ts";
 import { RPCMod } from "./call.ts";
-import { RPCClient } from "./client.ts";
+import type { RPCClient } from "./client.ts";
 import { RPCSignal } from "./signal.ts";
 
 export class RPCSession {

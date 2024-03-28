@@ -17,9 +17,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { SignalI, SignalO } from "../schema.ts";
-import { RPCClient } from "./client.ts";
-import { batch, computed, effect, ReadonlySignal, Signal, signal } from "../deps.ts";
+import type { SignalI, SignalO } from "../schema.ts";
+import type { RPCClient } from "./client.ts";
+import { batch, computed, effect, type ReadonlySignal, type Signal, signal } from "../deps.ts";
 import { decode, encode } from "../lib/object_stream.ts";
 
 export const SIGNAL_INVALID = Symbol("SIGNAL_INVALID");

@@ -17,9 +17,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { RPCConnection } from "./conn.ts";
-import { RPCMod } from "./call.ts";
-import { RPCSignal } from "./signal.ts";
+import type { RPCConnection } from "./conn.ts";
+import type { RPCMod } from "./call.ts";
+import type { RPCSignal } from "./signal.ts";
 import { attach_direct } from "../helper/attach_direct.ts";
 import { RPCClient } from "../client/client.ts";
 

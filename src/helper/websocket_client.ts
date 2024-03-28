@@ -17,7 +17,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { RPCClient, RPCClientImpl } from "../client/client.ts";
+import { type RPCClient, RPCClientImpl } from "../client/client.ts";
 import { RPCSession } from "../client/session.ts";
 import { attach_websocket } from "./attach_websocket.ts";
 

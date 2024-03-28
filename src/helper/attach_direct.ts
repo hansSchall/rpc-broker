@@ -17,14 +17,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { RPCClient } from "../client/client.ts";
+import type { RPCClient } from "../client/client.ts";
 import { RPCSession } from "../client/session.ts";
-import { RPCHub } from "../hub/hub.ts";
+import type { RPCHub } from "../hub/hub.ts";
 import { RPCHubClient } from "../hub/hubClient.ts";
 import { ZodStream } from "../lib/zod_stream.ts";
 import { Schema } from "../schema.ts";
 import { RPCConnection } from "../server/conn.ts";
-import { RPCServer } from "../server/server.ts";
+import type { RPCServer } from "../server/server.ts";
 
 export function attach_direct(server: RPCServer, client: RPCClient): {
     conn: RPCConnection;

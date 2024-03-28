@@ -17,7 +17,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { SignalO } from "../schema.ts";
+import type { SignalO } from "../schema.ts";
 
 export function merge_signal(
     { v: a_value, d: a_drop, h: a_hold, s: a_sub }: SignalO,

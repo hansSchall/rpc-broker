@@ -18,8 +18,8 @@
  */
 
 import { encode } from "../lib/object_stream.ts";
-import { RPCHub } from "./hub.ts";
-import { RPCHubClient } from "./hubClient.ts";
+import type { RPCHub } from "./hub.ts";
+import type { RPCHubClient } from "./hubClient.ts";
 
 export class RPCHubMod {
     private constructor(readonly hub: RPCHub, readonly id: string) {

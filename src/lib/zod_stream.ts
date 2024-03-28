@@ -17,7 +17,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { z } from "../deps.ts";
+import type { z } from "../deps.ts";
 
 export class ZodStream<Schema extends z.ZodType> extends TransformStream<unknown, z.infer<Schema>> {
     constructor(readonly schema: Schema) {

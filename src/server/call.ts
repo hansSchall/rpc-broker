@@ -17,8 +17,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { RPCConnection } from "./conn.ts";
-import { RPCServer } from "./server.ts";
+import type { RPCConnection } from "./conn.ts";
+import type { RPCServer } from "./server.ts";
 
 export class RPCMod {
     private constructor(readonly id: string) {

@@ -18,9 +18,9 @@
  */
 
 import { RPCClient } from "../mod.ts";
-import { RPCHubMod } from "./hubMod.ts";
-import { RPCHubSignal } from "./hubSignal.ts";
-import { RPCHubClient } from "./hubClient.ts";
+import type { RPCHubMod } from "./hubMod.ts";
+import type { RPCHubSignal } from "./hubSignal.ts";
+import type { RPCHubClient } from "./hubClient.ts";
 
 export * from "./hubMod.ts";
 export * from "./hubSignal.ts";

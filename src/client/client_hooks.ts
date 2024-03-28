@@ -17,8 +17,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { ReadonlySignal, useComputed, useEffect, useMemo, useSignal, z } from "../deps.ts";
-import { RPCClient } from "../mod.ts";
+import { type ReadonlySignal, useComputed, useEffect, useMemo, useSignal, type z } from "../deps.ts";
+import type { RPCClient } from "../mod.ts";
 import { SIGNAL_INVALID } from "./signal.ts";
 
 export class ClientHooks {

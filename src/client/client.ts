@@ -17,12 +17,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { RPCCallback, RPCMod } from "./call.ts";
-import { RPCSession } from "./session.ts";
+import { type RPCCallback, RPCMod } from "./call.ts";
+import type { RPCSession } from "./session.ts";
 import { RPCSignal } from "./signal.ts";
-import { computed, Signal, signal } from "../deps.ts";
+import { computed, type Signal, signal } from "../deps.ts";
 import { ClientHooks } from "./client_hooks.ts";
-import { ReadonlySignal } from "../deps.ts";
+import type { ReadonlySignal } from "../deps.ts";
 
 export * from "./call.ts";
 export * from "./session.ts";

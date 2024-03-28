@@ -20,7 +20,7 @@
 import { PackrStream, UnpackrStream } from "../lib/object_stream.ts";
 import { StreamedWebSocket } from "../lib/websocket_stream.ts";
 import { ZodStream } from "../lib/zod_stream.ts";
-import { Schema, SchemaI, SchemaO } from "../schema.ts";
+import { Schema, type SchemaI, type SchemaO } from "../schema.ts";
 
 export interface SessionLike {
     readonly readable: ReadableStream<SchemaO>;

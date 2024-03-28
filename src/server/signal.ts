@@ -17,9 +17,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { SignalI, SignalO } from "../schema.ts";
-import { RPCConnection } from "./conn.ts";
-import { RPCServer } from "./server.ts";
+import type { SignalI, SignalO } from "../schema.ts";
+import type { RPCConnection } from "./conn.ts";
+import type { RPCServer } from "./server.ts";
 import { merge_signal } from "./merge_signal.ts";
 
 function u8a_eq(a: Uint8Array, b: Uint8Array) {

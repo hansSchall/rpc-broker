@@ -18,10 +18,10 @@
  */
 
 import { EN_LOG } from "../deps.ts";
-import { Mutable } from "../helper/mutable.ts";
+import type { Mutable } from "../helper/mutable.ts";
 import { decode } from "../lib/object_stream.ts";
-import { Call, SchemaI, SchemaO, SignalO } from "../schema.ts";
-import { RPCHub } from "./hub.ts";
+import type { Call, SchemaI, SchemaO, SignalO } from "../schema.ts";
+import type { RPCHub } from "./hub.ts";
 import { RPCHubMod } from "./hubMod.ts";
 import { RPCHubSignal } from "./hubSignal.ts";
 
