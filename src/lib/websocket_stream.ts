@@ -29,7 +29,7 @@ export class StreamedWebSocket {
         });
     }
     private sender?: ReadableStreamDefaultController<Uint8Array>;
-    readonly readable = new ReadableStream<Uint8Array>({
+    readonly readable: ReadableStream<Uint8Array> = new ReadableStream({
         start: (controller) => {
             this.sender = controller;
         },
@@ -37,7 +37,7 @@ export class StreamedWebSocket {
             this.ws.close();
         },
     });
-    readonly writable = new WritableStream<Uint8Array>({
+    readonly writable: WritableStream<Uint8Array> = new WritableStream({
         write: (chunk) => {
             this.ws.send(chunk);
         },

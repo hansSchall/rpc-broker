@@ -28,11 +28,11 @@ export class RPCConnection {
     constructor(readonly server: RPCServer) {
         server.clients.add(this);
     }
-    readonly uid = crypto.randomUUID();
+    readonly uid: string = crypto.randomUUID();
     public label: string = this.uid.substring(0, 6);
 
     private sender?: ReadableStreamDefaultController<SchemaO>;
-    readonly readable = new ReadableStream<SchemaO>({
+    readonly readable: ReadableStream<SchemaO> = new ReadableStream({
         start: (controller) => {
             this.sender = controller;
         },
@@ -40,7 +40,7 @@ export class RPCConnection {
             this.dispose();
         },
     });
-    readonly writable = new WritableStream<SchemaI>({
+    readonly writable: WritableStream<SchemaI> = new WritableStream({
         write: (chunk) => {
             if (EN_LOG) {
                 console.log(`[Server ${this.label}] [RX]`, chunk);
@@ -92,7 +92,7 @@ export class RPCConnection {
         this.push();
     }
 
-    private signals = new Map<string, SignalO>();
+    private signals: Map<string, SignalO> = new Map();
     public push_signal(id: string, signal: SignalO, merge: (a: SignalO, b: SignalO) => SignalO | null) {
         if (this.signals.has(id)) {
             const merged = merge(this.signals.get(id)!, signal);
@@ -136,7 +136,7 @@ export class RPCConnection {
         }
     }
 
-    public disposed = false;
+    public disposed: boolean = false;
     dispose() {
         this.disposed = true;
         this.server.clients.delete(this);

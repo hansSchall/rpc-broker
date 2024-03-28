@@ -24,7 +24,7 @@ import { SIGNAL_INVALID } from "./signal.ts";
 export class ClientHooks {
     readonly client?: RPCClient;
 
-    public useSignal(id: string) {
+    public useSignal(id: string): ReadonlySignal<unknown> {
         const current_signal = useMemo(() => this.client!.signal(id), [id]);
         const signal_signal = useSignal(current_signal);
         useEffect(() => {

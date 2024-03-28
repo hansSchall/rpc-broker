@@ -19,7 +19,7 @@
 
 import { SignalI, SignalO } from "../schema.ts";
 import { RPCClient } from "./client.ts";
-import { batch, computed, effect, ReadonlySignal, signal } from "../deps.ts";
+import { batch, computed, effect, ReadonlySignal, Signal, signal } from "../deps.ts";
 import { decode, encode } from "../lib/object_stream.ts";
 
 export const SIGNAL_INVALID = Symbol("SIGNAL_INVALID");
@@ -82,24 +82,26 @@ export class RPCSignal {
         this.had_signal = false;
     }
 
-    private had_signal = false;
-    private num_requests = signal(0);
-    private requested = computed(() => this.num_requests.value > 0);
-    private remote_value = signal<unknown>(SIGNAL_INVALID);
-    private remote_valid = signal<boolean>(false);
-    private holding_remote = signal<boolean>(false);
+    private had_signal: boolean = false;
+    private num_requests: Signal<number> = signal(0);
+    private requested: ReadonlySignal<boolean> = computed(() => this.num_requests.value > 0);
+    private remote_value: Signal<unknown> = signal(SIGNAL_INVALID);
+    private remote_valid: Signal<boolean> = signal(false);
+    private holding_remote: Signal<boolean> = signal(false);
 
-    get value() {
+    get value(): unknown | SIGNAL_INVALID {
         return this.current.value;
     }
 
-    readonly current = computed(() => this.remote_valid.value ? this.remote_value.value : SIGNAL_INVALID);
+    readonly current: Signal<unknown | SIGNAL_INVALID> = computed(() =>
+        this.remote_valid.value ? this.remote_value.value : SIGNAL_INVALID
+    );
 
     /**
      * request a signal (without requesting the signal is invalid)
      * @returns Function that should be called when the signal is no longer needed
      */
-    public request() {
+    public request(): VoidFunction {
         this.num_requests.value++;
         return () => {
             setTimeout(() => {

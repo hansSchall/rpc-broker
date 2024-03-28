@@ -38,7 +38,7 @@ export class RPCMod {
     public _subscribe = false;
 
     private readonly subscriptions = new Set<RPCCallback>();
-    public subscribe(cb: RPCCallback) {
+    public subscribe(cb: RPCCallback): RPCMod {
         this.subscriptions.add(cb);
         this._subscribe = true;
         this.client._active_session.value?.push_mod_subscribe(this.id);

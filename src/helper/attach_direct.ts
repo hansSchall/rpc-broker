@@ -26,7 +26,10 @@ import { Schema } from "../schema.ts";
 import { RPCConnection } from "../server/conn.ts";
 import { RPCServer } from "../server/server.ts";
 
-export function attach_direct(server: RPCServer, client: RPCClient) {
+export function attach_direct(server: RPCServer, client: RPCClient): {
+    conn: RPCConnection;
+    session: RPCSession;
+} {
     const conn = new RPCConnection(server);
     const session = new RPCSession(client);
     // zod needed for default values
@@ -39,7 +42,10 @@ export function attach_direct(server: RPCServer, client: RPCClient) {
     };
 }
 
-export function attach_direct_to_hub(hub: RPCHub, client: RPCClient) {
+export function attach_direct_to_hub(hub: RPCHub, client: RPCClient): {
+    conn: RPCHubClient;
+    session: RPCSession;
+} {
     const conn = new RPCHubClient(hub);
     const session = new RPCSession(client);
     // zod needed for default values

@@ -17,11 +17,28 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-export { z } from "https://esm.sh/zod@v3.22.4";
+export { z } from "npm:zod";
 export * from "npm:@preact/signals";
 export { effect } from "npm:@preact/signals";
-export * from "https://esm.sh/preact@10.20.1/hooks";
-export { Packr, Unpackr } from "https://esm.sh/msgpackr@1.10.1";
-export { concat } from "https://deno.land/std@0.184.0/bytes/concat.ts";
+export * from "npm:preact@10.20.1/hooks";
+export { Packr, Unpackr } from "npm:msgpackr@1.10.1";
+
+//export { concat } from "https://deno.land/std@0.184.0/bytes/concat.ts";
+// Copyright 2018-2023 the Deno authors. All rights reserved. MIT license.
+export function concat(...buf: Uint8Array[]): Uint8Array {
+    let length = 0;
+    for (const b of buf) {
+        length += b.length;
+    }
+
+    const output = new Uint8Array(length);
+    let index = 0;
+    for (const b of buf) {
+        output.set(b, index);
+        index += b.length;
+    }
+
+    return output;
+}
 
 export const EN_LOG = false;

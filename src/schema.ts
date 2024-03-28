@@ -19,7 +19,100 @@
 
 import { z } from "./deps.ts";
 
-export const Schema = z.object({
+export type SchemaStatic = z.ZodObject<
+    {
+        l: z.ZodOptional<z.ZodString>;
+        e: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+        m: z.ZodOptional<z.ZodMap<z.ZodString, z.ZodBoolean>>;
+        c: z.ZodOptional<
+            z.ZodArray<
+                z.ZodObject<
+                    {
+                        m: z.ZodString;
+                        s: z.ZodString;
+                        a: z.ZodOptional<z.ZodType<Uint8Array, z.ZodTypeDef, Uint8Array>>;
+                    },
+                    "strip",
+                    z.ZodTypeAny,
+                    {
+                        m: string;
+                        s: string;
+                        a?: Uint8Array;
+                    },
+                    {
+                        m: string;
+                        s: string;
+                        a?: Uint8Array;
+                    }
+                >,
+                "many"
+            >
+        >;
+        s: z.ZodOptional<
+            z.ZodMap<
+                z.ZodString,
+                z.ZodObject<
+                    {
+                        v: z.ZodOptional<z.ZodType<Uint8Array, z.ZodTypeDef, Uint8Array>>;
+                        d: z.ZodDefault<z.ZodBoolean>;
+                        s: z.ZodOptional<z.ZodBoolean>;
+                        h: z.ZodOptional<z.ZodBoolean>;
+                    },
+                    "strip",
+                    z.ZodTypeAny,
+                    {
+                        v?: Uint8Array;
+                        d?: boolean;
+                        s?: boolean;
+                        h?: boolean;
+                    },
+                    {
+                        v?: Uint8Array;
+                        d?: boolean;
+                        s?: boolean;
+                        h?: boolean;
+                    }
+                >
+            >
+        >;
+    },
+    "strip",
+    z.ZodTypeAny,
+    {
+        l?: string;
+        e?: string[];
+        m?: Map<string, boolean>;
+        c?: {
+            m: string;
+            s: string;
+            a?: Uint8Array;
+        }[];
+        s?: Map<string, {
+            v?: Uint8Array;
+            d?: boolean;
+            s?: boolean;
+            h?: boolean;
+        }>;
+    },
+    {
+        l?: string;
+        e?: string[];
+        m?: Map<string, boolean>;
+        c?: {
+            m: string;
+            s: string;
+            a?: Uint8Array;
+        }[];
+        s?: Map<string, {
+            v?: Uint8Array;
+            d?: boolean;
+            s?: boolean;
+            h?: boolean;
+        }>;
+    }
+>;
+
+export const Schema: SchemaStatic = z.object({
     l: z.string(), // label
     e: z.string().array(), // error
     m: z.map(z.string(), z.boolean()), // mod

@@ -14,7 +14,10 @@
       "npm:@ts-morph/bootstrap@0.22": "npm:@ts-morph/bootstrap@0.22.0",
       "npm:@types/node": "npm:@types/node@18.16.19",
       "npm:code-block-writer@^13.0.1": "npm:code-block-writer@13.0.1",
-      "npm:preact": "npm:preact@10.19.5"
+      "npm:msgpackr@1.10.1": "npm:msgpackr@1.10.1",
+      "npm:preact": "npm:preact@10.19.5",
+      "npm:preact@10.20.1": "npm:preact@10.20.1",
+      "npm:zod": "npm:zod@3.22.4"
     },
     "jsr": {
       "@deno/cache-dir@0.8.0": {
@@ -65,6 +68,30 @@
       }
     },
     "npm": {
+      "@msgpackr-extract/msgpackr-extract-darwin-arm64@3.0.2": {
+        "integrity": "sha512-9bfjwDxIDWmmOKusUcqdS4Rw+SETlp9Dy39Xui9BEGEk19dDwH0jhipwFzEff/pFg95NKymc6TOTbRKcWeRqyQ==",
+        "dependencies": {}
+      },
+      "@msgpackr-extract/msgpackr-extract-darwin-x64@3.0.2": {
+        "integrity": "sha512-lwriRAHm1Yg4iDf23Oxm9n/t5Zpw1lVnxYU3HnJPTi2lJRkKTrps1KVgvL6m7WvmhYVt/FIsssWay+k45QHeuw==",
+        "dependencies": {}
+      },
+      "@msgpackr-extract/msgpackr-extract-linux-arm64@3.0.2": {
+        "integrity": "sha512-FU20Bo66/f7He9Fp9sP2zaJ1Q8L9uLPZQDub/WlUip78JlPeMbVL8546HbZfcW9LNciEXc8d+tThSJjSC+tmsg==",
+        "dependencies": {}
+      },
+      "@msgpackr-extract/msgpackr-extract-linux-arm@3.0.2": {
+        "integrity": "sha512-MOI9Dlfrpi2Cuc7i5dXdxPbFIgbDBGgKR5F2yWEa6FVEtSWncfVNKW5AKjImAQ6CZlBK9tympdsZJ2xThBiWWA==",
+        "dependencies": {}
+      },
+      "@msgpackr-extract/msgpackr-extract-linux-x64@3.0.2": {
+        "integrity": "sha512-gsWNDCklNy7Ajk0vBBf9jEx04RUxuDQfBse918Ww+Qb9HCPoGzS+XJTLe96iN3BVK7grnLiYghP/M4L8VsaHeA==",
+        "dependencies": {}
+      },
+      "@msgpackr-extract/msgpackr-extract-win32-x64@3.0.2": {
+        "integrity": "sha512-O+6Gs8UeDbyFpbSh2CPEz/UOrrdWPTBYNblZK5CxxLisYt4kGX3Sc+czffFonyjiGSq3jWLwJS/CCJc7tBr4sQ==",
+        "dependencies": {}
+      },
       "@nodelib/fs.scandir@2.1.5": {
         "integrity": "sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==",
         "dependencies": {
@@ -196,6 +223,28 @@
         "integrity": "sha512-+NsyUUAZDmo6YVHzL/stxSu3t9YS1iljliy3BSDrXJ/dkn1KYdmtZODGGjLcc9XLgVVpH4KshHB8XmZgMhaBXg==",
         "dependencies": {}
       },
+      "msgpackr-extract@3.0.2": {
+        "integrity": "sha512-SdzXp4kD/Qf8agZ9+iTu6eql0m3kWm1A2y1hkpTeVNENutaB0BwHlSvAIaMxwntmRUAUjon2V4L8Z/njd0Ct8A==",
+        "dependencies": {
+          "@msgpackr-extract/msgpackr-extract-darwin-arm64": "@msgpackr-extract/msgpackr-extract-darwin-arm64@3.0.2",
+          "@msgpackr-extract/msgpackr-extract-darwin-x64": "@msgpackr-extract/msgpackr-extract-darwin-x64@3.0.2",
+          "@msgpackr-extract/msgpackr-extract-linux-arm": "@msgpackr-extract/msgpackr-extract-linux-arm@3.0.2",
+          "@msgpackr-extract/msgpackr-extract-linux-arm64": "@msgpackr-extract/msgpackr-extract-linux-arm64@3.0.2",
+          "@msgpackr-extract/msgpackr-extract-linux-x64": "@msgpackr-extract/msgpackr-extract-linux-x64@3.0.2",
+          "@msgpackr-extract/msgpackr-extract-win32-x64": "@msgpackr-extract/msgpackr-extract-win32-x64@3.0.2",
+          "node-gyp-build-optional-packages": "node-gyp-build-optional-packages@5.0.7"
+        }
+      },
+      "msgpackr@1.10.1": {
+        "integrity": "sha512-r5VRLv9qouXuLiIBrLpl2d5ZvPt8svdQTl5/vMvE4nzDMyEX4sgW5yWhuBBj5UmgwOTWj8CIdSXn5sAfsHAWIQ==",
+        "dependencies": {
+          "msgpackr-extract": "msgpackr-extract@3.0.2"
+        }
+      },
+      "node-gyp-build-optional-packages@5.0.7": {
+        "integrity": "sha512-YlCCc6Wffkx0kHkmam79GKvDQ6x+QZkMjFGrIMxgFNILFvGSbCp2fCBC55pGTT9gVaz8Na5CLmxt/urtzRv36w==",
+        "dependencies": {}
+      },
       "path-browserify@1.0.1": {
         "integrity": "sha512-b7uo2UCUOYZcnF/3ID0lulOJi/bafxa1xPe7ZPsammBSpjSWQkjNxlt635YGS2MiR9GjvuXCtz2emr3jbsz98g==",
         "dependencies": {}
@@ -206,6 +255,10 @@
       },
       "preact@10.19.5": {
         "integrity": "sha512-OPELkDmSVbKjbFqF9tgvOowiiQ9TmsJljIzXRyNE8nGiis94pwv1siF78rQkAP1Q1738Ce6pellRg/Ns/CtHqQ==",
+        "dependencies": {}
+      },
+      "preact@10.20.1": {
+        "integrity": "sha512-JIFjgFg9B2qnOoGiYMVBtrcFxHqn+dNXbq76bVmcaHYJFYR4lW67AOcXgAYQQTDYXDOg/kTZrKPNCdRgJ2UJmw==",
         "dependencies": {}
       },
       "queue-microtask@1.2.3": {
@@ -227,6 +280,10 @@
         "dependencies": {
           "is-number": "is-number@7.0.0"
         }
+      },
+      "zod@3.22.4": {
+        "integrity": "sha512-iC+8Io04lddc+mVqQ9AZ7OQ2MrUKGN+oIQyq1vemgt46jwCwLfhq7/pwnBnNXXXZb8VTVLKwp9EDkx+ryxIWmg==",
+        "dependencies": {}
       }
     }
   },

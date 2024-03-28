@@ -28,11 +28,11 @@ export * from "./conn.ts";
 export * from "./signal.ts";
 
 export class RPCServer {
-    constructor(readonly aggregate = 1) {
+    constructor(readonly aggregate: number = 1) {
         attach_direct(this, this.client);
     }
-    readonly client = new RPCClient();
-    readonly clients = new Set<RPCConnection>();
-    readonly mods = new Map<string, RPCMod>();
-    readonly signals = new Map<string, RPCSignal>();
+    readonly client: RPCClient = new RPCClient();
+    readonly clients: Set<RPCConnection> = new Set();
+    readonly mods: Map<string, RPCMod> = new Map();
+    readonly signals: Map<string, RPCSignal> = new Map();
 }

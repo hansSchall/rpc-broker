@@ -20,8 +20,9 @@
 import { RPCCallback, RPCMod } from "./call.ts";
 import { RPCSession } from "./session.ts";
 import { RPCSignal } from "./signal.ts";
-import { computed, signal } from "../deps.ts";
+import { computed, Signal, signal } from "../deps.ts";
 import { ClientHooks } from "./client_hooks.ts";
+import { ReadonlySignal } from "../deps.ts";
 
 export * from "./call.ts";
 export * from "./session.ts";
@@ -35,27 +36,28 @@ export interface RPCClientWrapper {
 export class RPCClient extends ClientHooks implements RPCClientWrapper {
     constructor(readonly aggregate = 1) {
         super();
+        this.client = this;
     }
-    readonly _mods = new Map<string, RPCMod>();
-    readonly _signals = new Map<string, RPCSignal>();
-    readonly _active_session = signal<null | RPCSession>(null);
-    readonly connected = computed(() => this._active_session !== null);
-    override readonly client: RPCClient = this;
+    readonly _mods: Map<string, RPCMod> = new Map();
+    readonly _signals: Map<string, RPCSignal> = new Map();
+    readonly _active_session: Signal<null | RPCSession> = signal(null);
+    readonly connected: ReadonlySignal<boolean> = computed(() => this._active_session !== null);
+    readonly client: RPCClient;
 
-    public signal(id: string) {
+    public signal(id: string): RPCSignal {
         return RPCSignal.get(this.client, id);
     }
 
-    public mod(id: string) {
+    public mod(id: string): RPCMod {
         return RPCMod.get(this.client, id);
     }
 
-    public subscribe(id: string, cb: RPCCallback) {
+    public subscribe(id: string, cb: RPCCallback): RPCMod {
         return RPCMod.get(this.client, id).subscribe(cb);
     }
 
     public call(id: string, sub: string, arg?: unknown) {
-        return RPCMod.get(this.client, id).call(sub, arg);
+        RPCMod.get(this.client, id).call(sub, arg);
     }
 }
 
@@ -64,5 +66,5 @@ export abstract class RPCClientImpl extends ClientHooks implements RPCClientWrap
         super();
         this.client = client.client;
     }
-    override readonly client: RPCClient;
+    readonly client: RPCClient;
 }

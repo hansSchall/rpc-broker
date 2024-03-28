@@ -18,8 +18,6 @@
  */
 
 import { decode, encode } from "./object_stream.ts";
-import { Encoder } from "../deps.ts";
-import { desia, sia } from "npm:sializer";
 
 Deno.bench(`Encode MsgPackr`, {
     group: "enc",
@@ -46,31 +44,6 @@ Deno.bench(`Encode JSON`, {
     });
 });
 
-Deno.bench(`Encode Sia`, {
-    group: "enc",
-}, () => {
-    sia({
-        a: 45,
-        b: {
-            foo: "test",
-        },
-        c: null,
-    });
-});
-
-const enc = new Encoder();
-Deno.bench(`Encode CBOR`, {
-    group: "enc",
-}, () => {
-    enc.encode({
-        a: 45,
-        b: {
-            foo: "test",
-        },
-        c: null,
-    });
-});
-
 Deno.bench(`Decode MsgPackr`, {
     group: "dec",
 }, () => {
@@ -88,31 +61,6 @@ Deno.bench(`Decode JSON`, {
     baseline: true,
 }, () => {
     JSON.parse(JSON.stringify({
-        a: 45,
-        b: {
-            foo: "test",
-        },
-        c: null,
-    }));
-});
-
-Deno.bench(`Decode Sia`, {
-    group: "dec",
-}, () => {
-    desia(sia({
-        a: 45,
-        b: {
-            foo: "test",
-        },
-        c: null,
-    }));
-});
-
-const dec = new Encoder();
-Deno.bench(`Decode CBOR`, {
-    group: "dec",
-}, () => {
-    dec.decode(enc.encode({
         a: 45,
         b: {
             foo: "test",

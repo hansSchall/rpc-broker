@@ -10,7 +10,7 @@
         ]
     },
     "compilerOptions": {
-        "noImplicitOverride": true
+        "noImplicitOverride": false
     },
     "tasks": {
         "test": "deno fmt && deno lint && deno check src/mod.ts && deno test -A",

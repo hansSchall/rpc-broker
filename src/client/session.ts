@@ -37,11 +37,11 @@ export class RPCSession {
         client._active_session.value?.dispose();
         client._active_session.value = this;
     }
-    readonly uid = crypto.randomUUID();
+    readonly uid: string = crypto.randomUUID();
     public label: string = this.uid.substring(0, 6);
 
     private sender?: ReadableStreamDefaultController<SchemaO>;
-    readonly readable = new ReadableStream<SchemaO>({
+    readonly readable: ReadableStream<SchemaO> = new ReadableStream({
         start: (controller) => {
             this.sender = controller;
         },
@@ -49,7 +49,7 @@ export class RPCSession {
             this.dispose();
         },
     });
-    readonly writable = new WritableStream<SchemaI>({
+    readonly writable: WritableStream<SchemaI> = new WritableStream({
         write: (chunk) => {
             if (EN_LOG) {
                 console.log(`[Client ${this.label}] [RX]`, chunk);
@@ -100,7 +100,7 @@ export class RPCSession {
             }, this.client.aggregate);
         }
     }
-    private mod_subscriptions = new Map<string, boolean>();
+    private mod_subscriptions: Map<string, boolean> = new Map();
     public push_mod_subscribe(id: string) {
         this.mod_subscriptions.set(id, true);
         this.push();
@@ -109,13 +109,13 @@ export class RPCSession {
         this.mod_subscriptions.set(id, false);
         this.push();
     }
-    private calls = Array<Call>();
+    private calls: Call[] = [];
     public push_call(call: Call) {
         this.calls.push(call);
         this.push();
     }
 
-    private signals = new Map<string, SignalO>();
+    private signals: Map<string, SignalO> = new Map();
     public push_signal(id: string, signal: SignalO, merge: (a: SignalO, b: SignalO) => SignalO | null) {
         if (this.signals.has(id)) {
             const merged = merge(this.signals.get(id)!, signal);
@@ -150,7 +150,7 @@ export class RPCSession {
         }
     }
 
-    public disposed = false;
+    public disposed: boolean = false;
     dispose() {
         this.disposed = true;
         this.client._active_session.value = null;

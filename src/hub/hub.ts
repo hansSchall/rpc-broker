@@ -27,7 +27,7 @@ export * from "./hubSignal.ts";
 export * from "./hubClient.ts";
 
 export class RPCHub extends RPCClient {
-    readonly clients = new Set<RPCHubClient>();
-    readonly _hub_mods = new Map<string, RPCHubMod>();
-    readonly _hub_signals = new Map<string, RPCHubSignal>();
+    readonly clients: Set<RPCHubClient> = new Set();
+    readonly _hub_mods: Map<string, RPCHubMod> = new Map();
+    readonly _hub_signals: Map<string, RPCHubSignal> = new Map();
 }
