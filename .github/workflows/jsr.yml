@@ -1,0 +1,33 @@
+name: JSR Publish
+on:
+  push:
+    branches: main
+
+jobs:
+  publish:
+    name: Publish
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v3
+
+      - name: Install Deno
+        uses: denoland/setup-deno@v1
+        with:
+          deno-version: v1.x
+
+    #   - name: Install Node.js
+    #     uses: actions/setup-node@v3
+    #     with:
+    #       node-version: lts/*
+
+      - name: Test
+        run: deno task test
+
+      - name: Publish package to JSR
+        run: npx jsr publish

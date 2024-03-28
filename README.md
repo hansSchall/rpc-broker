@@ -11,6 +11,10 @@ Adapters for WebSockets are builtin, but it works over any transport layer that 
 streams, serial/RS232, WebRTC DataChannels, ...). If the transport layer directly supports JS object cloning (e.g worker
 processes) the binary serialization can be skipped.
 
+## Installation
+
+https://jsr.io/@hansschall/rpc-broker
+
 ## Usage
 
 RPC-Broker does not implement the classic client/server concept. It does not distinguish between RPC callers and RPC
