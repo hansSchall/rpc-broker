@@ -24,7 +24,10 @@ export * from "npm:preact@10.20.1/hooks";
 export { Packr, Unpackr } from "npm:msgpackr@1.10.1";
 
 //export { concat } from "https://deno.land/std@0.184.0/bytes/concat.ts";
-// Copyright 2018-2023 the Deno authors. All rights reserved. MIT license.
+/**
+ * @license MIT
+ * Copyright 2018-2023 the Deno authors. All rights reserved. MIT license.
+ */
 export function concat(...buf: Uint8Array[]): Uint8Array {
     let length = 0;
     for (const b of buf) {
@@ -41,4 +44,7 @@ export function concat(...buf: Uint8Array[]): Uint8Array {
     return output;
 }
 
+/**
+ * debug config: enable logging of all traffic
+ */
 export const EN_LOG = false;

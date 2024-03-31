@@ -26,6 +26,9 @@ import { merge_signal } from "../server/merge_signal.ts";
 import type { RPCHub } from "./hub.ts";
 import type { RPCHubClient } from "./hubClient.ts";
 
+/**
+ * @internal
+ */
 export class RPCHubSignal {
     private constructor(readonly hub: RPCHub, readonly id: string) {
         this.uplink_signal = hub.client.signal(id);
@@ -61,7 +64,10 @@ export class RPCHubSignal {
     private releases = new Map<RPCHubClient, VoidFunction>();
     private uplink_value = signal<unknown>(null);
 
-    public handle({ v: value, d: drop, s: subscribe }: SignalI, src: RPCHubClient) {
+    /**
+     * @internal
+     */
+    public _handle({ v: value, d: drop, s: subscribe }: SignalI, src: RPCHubClient) {
         if (subscribe === true) {
             this.subscribe(src);
         } else if (subscribe === false) {
@@ -101,7 +107,7 @@ export class RPCHubSignal {
     }
 
     private send_src(data: SignalO, src: RPCHubClient) {
-        src.push_signal(this.id, data, merge_signal);
+        src._push_signal(this.id, data, merge_signal);
     }
 
     public static get(hub: RPCHub, id: string): RPCHubSignal {
@@ -113,7 +119,10 @@ export class RPCHubSignal {
             return sig;
         }
     }
-    public static drop_conn(conn: RPCHubClient) {
+    /**
+     * @internal
+     */
+    public static _drop_conn(conn: RPCHubClient) {
         for (const [, mod] of conn.hub._hub_signals) {
             mod.unsubscribe(conn);
             if (conn === mod.owner) {

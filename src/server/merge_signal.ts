@@ -19,6 +19,10 @@
 
 import type { SignalO } from "../schema.ts";
 
+/**
+ * @internal
+ * merges signal messages
+ */
 export function merge_signal(
     { v: a_value, d: a_drop, h: a_hold, s: a_sub }: SignalO,
     { v: b_value, d: b_drop, h: b_hold, s: b_sub }: SignalO,

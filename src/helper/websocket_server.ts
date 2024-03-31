@@ -21,12 +21,18 @@ import { RPCConnection } from "../server/conn.ts";
 import { RPCServer } from "../server/server.ts";
 import { attach_websocket } from "./attach_websocket.ts";
 
+/**
+ * builtin WebSocket server core for integrating into your own server (Deno only)
+ */
 export function upgrade_websocket(server: RPCServer, req: Request) {
     const { socket, response } = Deno.upgradeWebSocket(req);
     attach_websocket(new RPCConnection(server), socket);
     return response;
 }
 
+/**
+ * builtin WebSocket server (Deno only)
+ */
 export function serve_websocket(port: number) {
     const rpc = new RPCServer();
     const http = Deno.serve({

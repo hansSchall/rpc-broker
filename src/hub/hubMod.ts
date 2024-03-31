@@ -21,10 +21,13 @@ import { encode } from "../lib/object_stream.ts";
 import type { RPCHub } from "./hub.ts";
 import type { RPCHubClient } from "./hubClient.ts";
 
+/**
+ * @internal
+ */
 export class RPCHubMod {
     private constructor(readonly hub: RPCHub, readonly id: string) {
         hub.client.subscribe(id, (s, a) => {
-            this.dispatch(s, encode(a));
+            this._dispatch(s, encode(a));
         });
     }
 
@@ -35,10 +38,13 @@ export class RPCHubMod {
     public unsubscribe(conn: RPCHubClient) {
         this.subscriptions.delete(conn);
     }
-    public dispatch(s: string, a?: Uint8Array) {
+    /**
+     * @internal
+     */
+    public _dispatch(s: string, a?: Uint8Array) {
         // console.log(`[Hub] [Dispatch] ${s}, subs=${this.subscriptions.size}`);
         for (const mod of this.subscriptions) {
-            mod.push_call({
+            mod._push_call({
                 m: this.id,
                 s,
                 a,
@@ -55,7 +61,10 @@ export class RPCHubMod {
             return mod;
         }
     }
-    public static unsubscribeAll(conn: RPCHubClient) {
+    /**
+     * @internal
+     */
+    public static _unsubscribeAll(conn: RPCHubClient) {
         for (const [, mod] of conn.hub._hub_mods) {
             mod.unsubscribe(conn);
         }

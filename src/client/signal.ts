@@ -38,6 +38,9 @@ export class RPCSignal {
         });
     }
 
+    /**
+     * @internal
+     */
     public _handle({ v: value, d: drop, h: hold }: SignalI) {
         if (drop) {
             this.remote_valid.value = false;
@@ -71,11 +74,17 @@ export class RPCSignal {
         }
     }
 
+    /**
+     * @internal
+     */
     public _reset() {
         this.had_signal = false;
         this.update();
     }
 
+    /**
+     * @internal
+     */
     public _off() {
         this.remote_valid.value = false;
         this.holding_remote.value = false;
@@ -89,17 +98,29 @@ export class RPCSignal {
     private remote_valid: Signal<boolean> = signal(false);
     private holding_remote: Signal<boolean> = signal(false);
 
+    /**
+     * current value (short for `RPCSignal.current.value`)
+     */
     get value(): unknown | SIGNAL_INVALID {
         return this.current.value;
     }
 
-    readonly current: Signal<unknown | SIGNAL_INVALID> = computed(() =>
-        this.remote_valid.value ? this.remote_value.value : SIGNAL_INVALID
-    );
+    /**
+     * current value as Signal
+     */
+    readonly current: ReadonlySignal<unknown | SIGNAL_INVALID> = computed(() => {
+        if (this.holding_remote.value && this.transmitter.value) {
+            return this.transmitter.value.value;
+        } else if (this.remote_valid.value) {
+            return this.remote_value.value;
+        } else {
+            return SIGNAL_INVALID;
+        }
+    });
 
     /**
      * request a signal (without requesting the signal is invalid)
-     * @returns Function that should be called when the signal is no longer needed
+     * @returns Function that should be called when the signal is no longer needed (the signal will be unsubscribed when all requests have been released)
      */
     public request(): VoidFunction {
         this.num_requests.value++;
@@ -112,14 +133,23 @@ export class RPCSignal {
 
     private transmitter = signal<ReadonlySignal<unknown> | null>(null);
 
+    /**
+     * Start/Stop transmitting a signal value
+     * @param value null stops transmitting
+     */
     public transmit(value: ReadonlySignal | null) {
         this.transmitter.value = value;
     }
 
     private send_src(data: SignalO) {
-        this.client._active_session.value?.push_signal(this.id, data, () => null);
+        this.client._active_session.value?._push_signal(this.id, data, () => null);
     }
 
+    /**
+     * Obtain a RPCSignal handle for the given client.
+     * This function ensures there will be only one instance of one signal (singleton)
+     * @internal
+     */
     public static get(client: RPCClient, id: string): RPCSignal {
         if (client._signals.has(id)) {
             return client._signals.get(id)!;

@@ -28,6 +28,9 @@ export class RPCMod {
     private constructor(readonly id: string, readonly client: RPCClient) {
     }
 
+    /**
+     * @internal
+     */
     public _dispatch(sub: string, content?: Uint8Array) {
         const arg = content ? decode(content) : undefined;
         for (const $ of this.subscriptions) {
@@ -35,32 +38,45 @@ export class RPCMod {
         }
     }
 
+    /**
+     * @internal
+     */
     public _subscribe = false;
 
     private readonly subscriptions = new Set<RPCCallback>();
+    /**
+     * Subscribe to calls
+     */
     public subscribe(cb: RPCCallback): RPCMod {
         this.subscriptions.add(cb);
         this._subscribe = true;
-        this.client._active_session.value?.push_mod_subscribe(this.id);
+        this.client._active_session.value?._push_mod_subscribe(this.id);
         return this;
     }
 
+    /**
+     * make rpc calls
+     */
     public call(sub: string, arg?: unknown) {
         // console.log("active session", this.client._active_session.value);
         if (arg !== undefined) {
-            this.client._active_session.value?.push_call({
+            this.client._active_session.value?._push_call({
                 m: this.id,
                 s: sub,
                 a: encode(arg),
             });
         } else {
-            this.client._active_session.value?.push_call({
+            this.client._active_session.value?._push_call({
                 m: this.id,
                 s: sub,
             });
         }
     }
 
+    /**
+     * Obtain a RPCMod handle for the given client.
+     * This function ensures there will be only one instance of one mod (singleton)
+     */
     public static get(client: RPCClient, id: string): RPCMod {
         if (client._mods.has(id)) {
             return client._mods.get(id)!;

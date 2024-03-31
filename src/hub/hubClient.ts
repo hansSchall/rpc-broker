@@ -25,6 +25,9 @@ import type { RPCHub } from "./hub.ts";
 import { RPCHubMod } from "./hubMod.ts";
 import { RPCHubSignal } from "./hubSignal.ts";
 
+/**
+ * equivalent to RPCConnection, but for hubs
+ */
 export class RPCHubClient {
     constructor(readonly hub: RPCHub) {
         hub.clients.add(this);
@@ -47,6 +50,10 @@ export class RPCHubClient {
                 console.log(`[HubClient] [RX]`, chunk);
             }
             this.recv(chunk);
+        },
+        close: () => {
+            this.dispose();
+            this.sender?.close();
         },
     });
     private send(data: SchemaO) {
@@ -88,13 +95,19 @@ export class RPCHubClient {
         }
     }
     private calls: Call[] = [];
-    public push_call(call: Call) {
+    /**
+     * @internal
+     */
+    public _push_call(call: Call) {
         this.calls.push(call);
         this.push();
     }
 
     private signals: Map<string, SignalO> = new Map();
-    public push_signal(id: string, signal: SignalO, merge: (a: SignalO, b: SignalO) => SignalO | null) {
+    /**
+     * @internal
+     */
+    public _push_signal(id: string, signal: SignalO, merge: (a: SignalO, b: SignalO) => SignalO | null) {
         if (this.signals.has(id)) {
             const merged = merge(this.signals.get(id)!, signal);
             if (merged !== null) {
@@ -131,16 +144,23 @@ export class RPCHubClient {
         if (data.s) {
             for (const [id, $] of data.s) {
                 const sig = RPCHubSignal.get(this.hub, id);
-                sig.handle($, this);
+                sig._handle($, this);
             }
         }
     }
 
+    /**
+     * @readonly
+     */
     public disposed: boolean = false;
+
+    /**
+     * dispose
+     */
     dispose() {
         this.disposed = true;
         this.hub.clients.delete(this);
-        RPCHubMod.unsubscribeAll(this);
-        RPCHubSignal.drop_conn(this);
+        RPCHubMod._unsubscribeAll(this);
+        RPCHubSignal._drop_conn(this);
     }
 }

@@ -20,6 +20,9 @@
 import type { z } from "../deps.ts";
 import { Schema, type SchemaI } from "../schema.ts";
 
+/**
+ * Zod validation as TransformStream
+ */
 export class ZodStream<Schema extends z.ZodType> extends TransformStream<unknown, z.infer<Schema>> {
     constructor(readonly schema: Schema) {
         super({
@@ -35,6 +38,9 @@ export class ZodStream<Schema extends z.ZodType> extends TransformStream<unknown
     }
 }
 
+/**
+ * short for `new ZodStream(Schema)`
+ */
 export function check_stream(): TransformStream<unknown, SchemaI> {
     return new ZodStream(Schema);
 }

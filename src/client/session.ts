@@ -24,6 +24,9 @@ import { RPCMod } from "./call.ts";
 import type { RPCClient } from "./client.ts";
 import { RPCSignal } from "./signal.ts";
 
+/**
+ * represents one connection session, e.g one WebSocket connection attempt
+ */
 export class RPCSession {
     constructor(readonly client: RPCClient) {
         for (const [id, mod] of client._mods) {
@@ -54,7 +57,11 @@ export class RPCSession {
             if (EN_LOG) {
                 console.log(`[Client ${this.label}] [RX]`, chunk);
             }
-            this.recv(chunk);
+            this._recv(chunk);
+        },
+        close: () => {
+            this.dispose();
+            this.sender?.close();
         },
     });
     private send(data: SchemaO) {
@@ -101,22 +108,34 @@ export class RPCSession {
         }
     }
     private mod_subscriptions: Map<string, boolean> = new Map();
-    public push_mod_subscribe(id: string) {
+    /**
+     * @internal
+     */
+    public _push_mod_subscribe(id: string) {
         this.mod_subscriptions.set(id, true);
         this.push();
     }
-    public push_mod_unsubscribe(id: string) {
+    /**
+     * @internal
+     */
+    public _push_mod_unsubscribe(id: string) {
         this.mod_subscriptions.set(id, false);
         this.push();
     }
     private calls: Call[] = [];
-    public push_call(call: Call) {
+    /**
+     * @internal
+     */
+    public _push_call(call: Call) {
         this.calls.push(call);
         this.push();
     }
 
     private signals: Map<string, SignalO> = new Map();
-    public push_signal(id: string, signal: SignalO, merge: (a: SignalO, b: SignalO) => SignalO | null) {
+    /**
+     * @internal
+     */
+    public _push_signal(id: string, signal: SignalO, merge: (a: SignalO, b: SignalO) => SignalO | null) {
         if (this.signals.has(id)) {
             const merged = merge(this.signals.get(id)!, signal);
             if (merged !== null) {
@@ -131,7 +150,7 @@ export class RPCSession {
         this.push();
     }
 
-    private recv(data: SchemaI) {
+    private _recv(data: SchemaI) {
         if (data.l) {
             this.label = data.l ?? this.uid;
         }
@@ -150,10 +169,17 @@ export class RPCSession {
         }
     }
 
+    /**
+     * @readonly
+     */
     public disposed: boolean = false;
+    /**
+     * dispose
+     */
     dispose() {
         this.disposed = true;
         this.client._active_session.value = null;
+        this.sender?.close();
         for (const [, signal] of this.client._signals) {
             signal._off();
         }

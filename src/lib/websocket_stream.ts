@@ -17,6 +17,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+/**
+ * Use a WebSocket via WebStreams
+ */
 export class StreamedWebSocket {
     constructor(readonly ws: WebSocket) {
         ws.binaryType = "arraybuffer";

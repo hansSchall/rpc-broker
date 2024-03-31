@@ -17,23 +17,23 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { type RPCCallback, RPCMod } from "./call.ts";
+import type { RPCMod } from "./call.ts";
 import type { RPCSession } from "./session.ts";
-import { RPCSignal } from "./signal.ts";
+import type { RPCSignal } from "./signal.ts";
 import { computed, type Signal, signal } from "../deps.ts";
-import { ClientHooks } from "./client_hooks.ts";
+import { ClientAPI } from "./client_api.ts";
 import type { ReadonlySignal } from "../deps.ts";
 
 export * from "./call.ts";
 export * from "./session.ts";
 export * from "./signal.ts";
-export * from "./client_hooks.ts";
+export * from "./client_api.ts";
 
-export interface RPCClientWrapper {
-    readonly client: RPCClient;
-}
-
-export class RPCClient extends ClientHooks implements RPCClientWrapper {
+/**
+ * handles one RPC client
+ * Usually one instance per instance
+ */
+export class RPCClient extends ClientAPI {
     constructor(readonly aggregate = 1) {
         super();
         this.client = this;
@@ -43,26 +43,14 @@ export class RPCClient extends ClientHooks implements RPCClientWrapper {
     readonly _active_session: Signal<null | RPCSession> = signal(null);
     readonly connected: ReadonlySignal<boolean> = computed(() => this._active_session !== null);
     readonly client: RPCClient;
-
-    public signal(id: string): RPCSignal {
-        return RPCSignal.get(this.client, id);
-    }
-
-    public mod(id: string): RPCMod {
-        return RPCMod.get(this.client, id);
-    }
-
-    public subscribe(id: string, cb: RPCCallback): RPCMod {
-        return RPCMod.get(this.client, id).subscribe(cb);
-    }
-
-    public call(id: string, sub: string, arg?: unknown) {
-        RPCMod.get(this.client, id).call(sub, arg);
-    }
 }
 
-export abstract class RPCClientImpl extends ClientHooks implements RPCClientWrapper {
-    constructor(client: RPCClientWrapper) {
+/**
+ * Implements the same API as RPCClient
+ * Used for client wrappers like WebSocketClient
+ */
+export abstract class RPCClientImpl extends ClientAPI {
+    constructor(client: ClientAPI) {
         super();
         this.client = client.client;
     }

@@ -22,6 +22,9 @@ import type { RPCConnection } from "./conn.ts";
 import type { RPCServer } from "./server.ts";
 import { merge_signal } from "./merge_signal.ts";
 
+/**
+ * compares Uint8Arrays
+ */
 function u8a_eq(a: Uint8Array, b: Uint8Array) {
     if (a.length !== b.length) {
         return false;
@@ -36,6 +39,9 @@ function u8a_eq(a: Uint8Array, b: Uint8Array) {
     return true;
 }
 
+/**
+ * compares (Uint8Array | null)
+ */
 function update_eq(a: Uint8Array | null, b: Uint8Array | null) {
     if (a === b) {
         return true;
@@ -46,6 +52,10 @@ function update_eq(a: Uint8Array | null, b: Uint8Array | null) {
     }
 }
 
+/**
+ * Server handle of RPC Signals
+ * @internal
+ */
 export class RPCSignal {
     private constructor(readonly id: string) {
     }
@@ -109,20 +119,20 @@ export class RPCSignal {
     }
 
     private send_src(data: SignalO, src: RPCConnection) {
-        src.push_signal(this.id, data, merge_signal);
+        src._push_signal(this.id, data, merge_signal);
     }
 
     public static get(server: RPCServer, id: string): RPCSignal {
-        if (server.signals.has(id)) {
-            return server.signals.get(id)!;
+        if (server._signals.has(id)) {
+            return server._signals.get(id)!;
         } else {
             const sig = new RPCSignal(id);
-            server.signals.set(id, sig);
+            server._signals.set(id, sig);
             return sig;
         }
     }
     public static drop_conn(conn: RPCConnection) {
-        for (const [, mod] of conn.server.signals) {
+        for (const [, mod] of conn.server._signals) {
             mod.unsubscribe(conn);
             if (conn === mod.owner) {
                 mod.update(null);

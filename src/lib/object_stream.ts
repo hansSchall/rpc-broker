@@ -22,14 +22,23 @@ import { concat, Packr, Unpackr } from "../deps.ts";
 const packr = new Packr();
 const unpackr = new Unpackr();
 
+/**
+ * Serialize value
+ */
 export function encode<T = unknown>(value: T): Uint8Array {
     return packr.pack(value);
 }
 
+/**
+ * Deserialize value
+ */
 export function decode(chunk: Uint8Array): unknown {
     return unpackr.unpack(chunk);
 }
 
+/**
+ * TransformStream serializer
+ */
 export class PackrStream<T = unknown> extends TransformStream<T, Uint8Array> {
     private packr = new Packr();
     constructor() {
@@ -41,6 +50,9 @@ export class PackrStream<T = unknown> extends TransformStream<T, Uint8Array> {
     }
 }
 
+/**
+ * TransformStream Deserializer
+ */
 export class UnpackrStream extends TransformStream<Uint8Array, unknown> {
     private incompleteBuffer?: Uint8Array;
     private unpackr = new Unpackr();

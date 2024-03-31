@@ -19,6 +19,9 @@
 
 import { z } from "./deps.ts";
 
+/**
+ * Static inferred schema (for no-slow-types)
+ */
 export type SchemaStatic = z.ZodObject<
     {
         l: z.ZodOptional<z.ZodString>;
@@ -112,6 +115,9 @@ export type SchemaStatic = z.ZodObject<
     }
 >;
 
+/**
+ * Zod Schema for messages
+ */
 export const Schema: SchemaStatic = z.object({
     l: z.string(), // label
     e: z.string().array(), // error
@@ -132,12 +138,27 @@ export const Schema: SchemaStatic = z.object({
     ),
 }).partial();
 
+/**
+ * Static Schema for Incoming messages
+ */
 export type SchemaI = Readonly<z.output<typeof Schema>>;
+/**
+ * Static Schema for Outgoing Messages
+ */
 export type SchemaO = Readonly<z.input<typeof Schema>>;
 
 type MapItem<M> = M extends Map<unknown, infer T> ? T : never;
 type ArrayItem<A> = A extends Array<infer T> ? T : never;
 
+/**
+ * Partial Static Schema for Calls (Schema.c)
+ */
 export type Call = ArrayItem<SchemaI["c"]>;
+/**
+ * Partial Static Schema for Signal (Incoming, Schema.s)
+ */
 export type SignalI = MapItem<SchemaI["s"]>;
+/**
+ * Partial Static Schema for Signal (Outgoing, Schema.s)
+ */
 export type SignalO = MapItem<SchemaO["s"]>;

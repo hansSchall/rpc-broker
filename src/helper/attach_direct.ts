@@ -26,6 +26,9 @@ import { Schema } from "../schema.ts";
 import { RPCConnection } from "../server/conn.ts";
 import type { RPCServer } from "../server/server.ts";
 
+/**
+ * directly connect a client to a server without any intermediary serialization
+ */
 export function attach_direct(server: RPCServer, client: RPCClient): {
     conn: RPCConnection;
     session: RPCSession;
@@ -42,6 +45,9 @@ export function attach_direct(server: RPCServer, client: RPCClient): {
     };
 }
 
+/**
+ * directly connect a client to a hub without any intermediary serialization
+ */
 export function attach_direct_to_hub(hub: RPCHub, client: RPCClient): {
     conn: RPCHubClient;
     session: RPCSession;

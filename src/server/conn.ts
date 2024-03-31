@@ -24,9 +24,12 @@ import { RPCMod } from "./call.ts";
 import type { RPCServer } from "./server.ts";
 import { RPCSignal } from "./signal.ts";
 
+/**
+ * Handler for a connection to {@link RPCServer}
+ */
 export class RPCConnection {
     constructor(readonly server: RPCServer) {
-        server.clients.add(this);
+        server._clients.add(this);
     }
     readonly uid: string = crypto.randomUUID();
     public label: string = this.uid.substring(0, 6);
@@ -46,6 +49,10 @@ export class RPCConnection {
                 console.log(`[Server ${this.label}] [RX]`, chunk);
             }
             this.recv(chunk);
+        },
+        close: () => {
+            this.dispose();
+            this.sender?.close();
         },
     });
     private send(data: SchemaO) {
@@ -87,13 +94,19 @@ export class RPCConnection {
         }
     }
     private calls = Array<Call>();
-    public push_call(call: Call) {
+    /**
+     * @internal
+     */
+    public _push_call(call: Call) {
         this.calls.push(call);
         this.push();
     }
 
     private signals: Map<string, SignalO> = new Map();
-    public push_signal(id: string, signal: SignalO, merge: (a: SignalO, b: SignalO) => SignalO | null) {
+    /**
+     * @internal
+     */
+    public _push_signal(id: string, signal: SignalO, merge: (a: SignalO, b: SignalO) => SignalO | null) {
         if (this.signals.has(id)) {
             const merged = merge(this.signals.get(id)!, signal);
             if (merged !== null) {
@@ -136,10 +149,16 @@ export class RPCConnection {
         }
     }
 
+    /**
+     * @readonly
+     */
     public disposed: boolean = false;
+    /**
+     * dispose
+     */
     dispose() {
         this.disposed = true;
-        this.server.clients.delete(this);
+        this.server._clients.delete(this);
         RPCMod.unsubscribeAll(this);
         RPCSignal.drop_conn(this);
     }

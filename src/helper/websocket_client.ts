@@ -21,6 +21,9 @@ import { type RPCClient, RPCClientImpl } from "../client/client.ts";
 import { RPCSession } from "../client/session.ts";
 import { attach_websocket } from "./attach_websocket.ts";
 
+/**
+ * builtin WebSocket client uplink
+ */
 export class WebsocketClient extends RPCClientImpl {
     constructor(client: RPCClient, readonly url: URL | string) {
         super(client);

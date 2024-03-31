@@ -22,12 +22,18 @@ import { StreamedWebSocket } from "../lib/websocket_stream.ts";
 import { ZodStream } from "../lib/zod_stream.ts";
 import { Schema, type SchemaI, type SchemaO } from "../schema.ts";
 
+/**
+ * Wrapper for {@link RPCSession} or {@link RPCConnection}
+ */
 export interface SessionLike {
     readonly readable: ReadableStream<SchemaO>;
     readonly writable: WritableStream<SchemaI>;
     dispose(): void;
 }
 
+/**
+ * attaches a websocket to a {@link SessionLike}
+ */
 export function attach_websocket(session: SessionLike, ws: WebSocket) {
     const streamed = new StreamedWebSocket(ws);
 

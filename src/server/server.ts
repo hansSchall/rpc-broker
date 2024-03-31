@@ -27,12 +27,27 @@ export * from "./call.ts";
 export * from "./conn.ts";
 export * from "./signal.ts";
 
+/**
+ * RPC Server
+ */
 export class RPCServer {
     constructor(readonly aggregate: number = 1) {
         attach_direct(this, this.client);
     }
+    /**
+     * default client (automatically attached)
+     */
     readonly client: RPCClient = new RPCClient();
-    readonly clients: Set<RPCConnection> = new Set();
-    readonly mods: Map<string, RPCMod> = new Map();
-    readonly signals: Map<string, RPCSignal> = new Map();
+    /**
+     * @internal
+     */
+    readonly _clients: Set<RPCConnection> = new Set();
+    /**
+     * @internal
+     */
+    readonly _mods: Map<string, RPCMod> = new Map();
+    /**
+     * @internal
+     */
+    readonly _signals: Map<string, RPCSignal> = new Map();
 }

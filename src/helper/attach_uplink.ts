@@ -21,6 +21,9 @@ import { PackrStream } from "../mod.ts";
 import { UnpackrStream } from "../mod.ts";
 import { type RPCClient, RPCSession, Schema, ZodStream } from "../mod.ts";
 
+/**
+ * use anything that implements readable/writable streams a client uplink
+ */
 export function attach_uplink(client: RPCClient, uplink: {
     readonly readable: ReadableStream<Uint8Array>;
     readonly writable: WritableStream<Uint8Array>;

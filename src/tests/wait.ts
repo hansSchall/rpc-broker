@@ -17,6 +17,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+/**
+ * Promise wrapper for setTimeout
+ */
 export function wait(time: number) {
     return new Promise<void>((resolve) => {
         setTimeout(() => {

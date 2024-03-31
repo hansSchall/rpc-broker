@@ -20,6 +20,9 @@
 import type { RPCConnection } from "./conn.ts";
 import type { RPCServer } from "./server.ts";
 
+/**
+ * @internal
+ */
 export class RPCMod {
     private constructor(readonly id: string) {
     }
@@ -34,7 +37,7 @@ export class RPCMod {
     public dispatch(s: string, a?: Uint8Array) {
         // console.log(`[Server] [Dispatch] ${s}, subs=${this.subscriptions.size}`);
         for (const mod of this.subscriptions) {
-            mod.push_call({
+            mod._push_call({
                 m: this.id,
                 s,
                 a,
@@ -43,16 +46,16 @@ export class RPCMod {
     }
 
     public static get(server: RPCServer, id: string): RPCMod {
-        if (server.mods.has(id)) {
-            return server.mods.get(id)!;
+        if (server._mods.has(id)) {
+            return server._mods.get(id)!;
         } else {
             const mod = new RPCMod(id);
-            server.mods.set(id, mod);
+            server._mods.set(id, mod);
             return mod;
         }
     }
     public static unsubscribeAll(conn: RPCConnection) {
-        for (const [, mod] of conn.server.mods) {
+        for (const [, mod] of conn.server._mods) {
             mod.unsubscribe(conn);
         }
     }
