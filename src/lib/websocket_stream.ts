@@ -27,8 +27,11 @@ export class StreamedWebSocket {
             this.sender?.enqueue(new Uint8Array(ev.data));
         });
         ws.addEventListener("close", () => {
-            this.readable.cancel();
-            this.writable.close();
+            try {
+                this.sender?.close();
+            } catch (_) {
+                //
+            }
         });
     }
     private sender?: ReadableStreamDefaultController<Uint8Array>;
@@ -37,7 +40,11 @@ export class StreamedWebSocket {
             this.sender = controller;
         },
         cancel: () => {
-            this.ws.close();
+            try {
+                this.ws.close();
+            } catch (_) {
+                //
+            }
         },
     });
     readonly writable: WritableStream<Uint8Array> = new WritableStream({

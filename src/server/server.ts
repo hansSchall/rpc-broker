@@ -50,4 +50,14 @@ export class RPCServer {
      * @internal
      */
     readonly _signals: Map<string, RPCSignal> = new Map();
+
+    /**
+     * cleanup
+     */
+    public dispose() {
+        for (const $ of this._clients) {
+            $.dispose();
+        }
+        this.client.dispose();
+    }
 }

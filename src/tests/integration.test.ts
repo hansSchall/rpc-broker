@@ -23,6 +23,7 @@ import { RPCClient, RPCServer } from "../mod.ts";
 import { effect, signal } from "../deps.ts";
 import { SIGNAL_INVALID } from "../client/signal.ts";
 import { RPCHub } from "../hub/hub.ts";
+import { wait } from "./wait.ts";
 
 function assertCall(timeout = 500) {
     let res = () => {};
@@ -73,6 +74,10 @@ Deno.test("RPC Call", async () => {
     });
 
     await call.finish();
+    server.dispose();
+    clientA.dispose();
+    clientB.dispose();
+    await wait(10);
 });
 
 Deno.test("RPC Hub/down Call", async () => {
@@ -103,6 +108,11 @@ Deno.test("RPC Hub/down Call", async () => {
     });
 
     await call.finish();
+    server.dispose();
+    hub.dispose();
+    clientA.dispose();
+    clientB.dispose();
+    await wait(10);
 });
 
 Deno.test("RPC Hub/up Call", async () => {
@@ -131,6 +141,11 @@ Deno.test("RPC Hub/up Call", async () => {
     });
 
     await call.finish();
+    server.dispose();
+    hub.dispose();
+    clientA.dispose();
+    clientB.dispose();
+    await wait(10);
 });
 
 Deno.test("RPC Signal", async () => {
@@ -154,6 +169,10 @@ Deno.test("RPC Signal", async () => {
     clientA.signal("foo").transmit(send);
 
     await call.finish();
+    server.dispose();
+    clientA.dispose();
+    clientB.dispose();
+    await wait(10);
 });
 
 Deno.test("RPC Hub/down Signal", async () => {
@@ -179,6 +198,11 @@ Deno.test("RPC Hub/down Signal", async () => {
     clientA.signal("foo").transmit(send);
 
     await call.finish();
+    server.dispose();
+    hub.dispose();
+    clientA.dispose();
+    clientB.dispose();
+    await wait(10);
 });
 
 Deno.test("RPC Hub/up Signal", async () => {
@@ -204,4 +228,39 @@ Deno.test("RPC Hub/up Signal", async () => {
     clientB.signal("foo").transmit(send);
 
     await call.finish();
+    server.dispose();
+    hub.dispose();
+    clientA.dispose();
+    clientB.dispose();
+    await wait(10);
+});
+
+Deno.test("RPC Signal before connection", async () => {
+    const server = new RPCServer();
+    const clientA = new RPCClient();
+    const clientB = new RPCClient();
+    const call = assertCall();
+    const recv = clientB.signal("foo");
+    recv.request();
+    effect(() => {
+        if (recv.value !== SIGNAL_INVALID) {
+            assertEquals(recv.value, 5);
+            call.call();
+        }
+    });
+
+    const send = signal(5);
+
+    clientA.signal("foo").transmit(send);
+
+    setTimeout(() => {
+        attach_direct(server, clientA);
+        attach_direct(server, clientB);
+    }, 200);
+
+    await call.finish();
+    server.dispose();
+    clientA.dispose();
+    clientB.dispose();
+    await wait(10);
 });

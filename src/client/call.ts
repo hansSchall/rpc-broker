@@ -50,7 +50,7 @@ export class RPCMod {
     public subscribe(cb: RPCCallback): RPCMod {
         this.subscriptions.add(cb);
         this._subscribe = true;
-        this.client._active_session.value?._push_mod_subscribe(this.id);
+        this.client._active_session.peek()?._push_mod_subscribe(this.id);
         return this;
     }
 
@@ -58,15 +58,14 @@ export class RPCMod {
      * make rpc calls
      */
     public call(sub: string, arg?: unknown) {
-        // console.log("active session", this.client._active_session.value);
         if (arg !== undefined) {
-            this.client._active_session.value?._push_call({
+            this.client._active_session.peek()?._push_call({
                 m: this.id,
                 s: sub,
                 a: encode(arg),
             });
         } else {
-            this.client._active_session.value?._push_call({
+            this.client._active_session.peek()?._push_call({
                 m: this.id,
                 s: sub,
             });

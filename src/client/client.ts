@@ -43,6 +43,13 @@ export class RPCClient extends ClientAPI {
     readonly _active_session: Signal<null | RPCSession> = signal(null);
     readonly connected: ReadonlySignal<boolean> = computed(() => this._active_session !== null);
     readonly client: RPCClient;
+
+    /**
+     * cleanup
+     */
+    public dispose() {
+        this._active_session.peek()?.dispose();
+    }
 }
 
 /**
@@ -55,4 +62,11 @@ export abstract class RPCClientImpl extends ClientAPI {
         this.client = client.client;
     }
     readonly client: RPCClient;
+
+    /**
+     * cleanup
+     */
+    public dispose() {
+        this.client.dispose();
+    }
 }

@@ -124,10 +124,14 @@ export class RPCSignal {
      */
     public request(): VoidFunction {
         this.num_requests.value++;
+        let released = false;
         return () => {
-            setTimeout(() => {
-                this.num_requests.value--;
-            }, this.client.aggregate);
+            if (!released) {
+                released = true;
+                setTimeout(() => {
+                    this.num_requests.value--;
+                }, this.client.aggregate);
+            }
         };
     }
 

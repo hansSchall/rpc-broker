@@ -52,7 +52,6 @@ export class RPCConnection {
         },
         close: () => {
             this.dispose();
-            this.sender?.close();
         },
     });
     private send(data: SchemaO) {
@@ -71,8 +70,8 @@ export class RPCConnection {
             this.timeout = null;
         }
         const data: Mutable<SchemaO> = {
-            c: this.calls,
-            s: this.signals,
+            c: [...this.calls],
+            s: new Map(this.signals),
         };
         if (this.calls.length === 0) {
             delete data.c;
@@ -157,8 +156,16 @@ export class RPCConnection {
      * dispose
      */
     dispose() {
+        if (this.timeout) {
+            clearTimeout(this.timeout);
+        }
         this.disposed = true;
         this.server._clients.delete(this);
+        try {
+            this.sender?.close();
+        } catch (_) {
+            //
+        }
         RPCMod.unsubscribeAll(this);
         RPCSignal.drop_conn(this);
     }

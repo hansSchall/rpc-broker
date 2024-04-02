@@ -30,7 +30,7 @@ import { RPCHubSignal } from "./hubSignal.ts";
  */
 export class RPCHubClient {
     constructor(readonly hub: RPCHub) {
-        hub.clients.add(this);
+        hub._clients.add(this);
     }
     readonly uid: string = crypto.randomUUID();
     public label: string = this.uid;
@@ -53,7 +53,6 @@ export class RPCHubClient {
         },
         close: () => {
             this.dispose();
-            this.sender?.close();
         },
     });
     private send(data: SchemaO) {
@@ -72,8 +71,8 @@ export class RPCHubClient {
             this.timeout = null;
         }
         const data: Mutable<SchemaO> = {
-            c: this.calls,
-            s: this.signals,
+            c: [...this.calls],
+            s: new Map(this.signals),
         };
         if (this.calls.length === 0) {
             delete data.c;
@@ -158,8 +157,16 @@ export class RPCHubClient {
      * dispose
      */
     dispose() {
+        if (this.timeout) {
+            clearTimeout(this.timeout);
+        }
         this.disposed = true;
-        this.hub.clients.delete(this);
+        this.hub._clients.delete(this);
+        try {
+            this.sender?.close();
+        } catch (_) {
+            //
+        }
         RPCHubMod._unsubscribeAll(this);
         RPCHubSignal._drop_conn(this);
     }

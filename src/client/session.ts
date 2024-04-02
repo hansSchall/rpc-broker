@@ -37,7 +37,7 @@ export class RPCSession {
         for (const [, signal] of client._signals) {
             signal._reset();
         }
-        client._active_session.value?.dispose();
+        client._active_session.peek()?.dispose();
         client._active_session.value = this;
     }
     readonly uid: string = crypto.randomUUID();
@@ -61,7 +61,6 @@ export class RPCSession {
         },
         close: () => {
             this.dispose();
-            this.sender?.close();
         },
     });
     private send(data: SchemaO) {
@@ -80,9 +79,9 @@ export class RPCSession {
             this.timeout = null;
         }
         const data: Mutable<SchemaO> = {
-            m: this.mod_subscriptions,
-            c: this.calls,
-            s: this.signals,
+            m: new Map(this.mod_subscriptions),
+            c: [...this.calls],
+            s: new Map(this.signals),
         };
         if (this.mod_subscriptions.size === 0) {
             delete data.m;
@@ -177,9 +176,16 @@ export class RPCSession {
      * dispose
      */
     dispose() {
+        if (this.timeout) {
+            clearTimeout(this.timeout);
+        }
         this.disposed = true;
         this.client._active_session.value = null;
-        this.sender?.close();
+        try {
+            this.sender?.close();
+        } catch (_) {
+            //
+        }
         for (const [, signal] of this.client._signals) {
             signal._off();
         }
