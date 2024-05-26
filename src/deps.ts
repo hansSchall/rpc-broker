@@ -17,11 +17,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-export { z } from "npm:zod@3.22.4";
-export * from "npm:@preact/signals@1.2.3";
-export { effect } from "npm:@preact/signals@1.2.3";
-export * from "npm:preact@10.20.1/hooks";
-export { Packr, Unpackr } from "npm:msgpackr@1.10.1";
+export { z } from "npm:zod@^3.22.4";
+export * from "npm:@preact/signals@^1.2.3";
+export { effect } from "npm:@preact/signals@^1.2.3";
+export * from "npm:preact@^10.20.1/hooks";
+export { Packr, Unpackr } from "npm:msgpackr@^1.10.1";
 
 //export { concat } from "https://deno.land/std@0.184.0/bytes/concat.ts";
 /**

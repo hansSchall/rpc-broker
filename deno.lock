@@ -12,14 +12,18 @@
       "jsr:@std/path@^0.218.2": "jsr:@std/path@0.218.2",
       "npm:@preact/signals": "npm:@preact/signals@1.2.3_preact@10.19.5",
       "npm:@preact/signals@1.2.3": "npm:@preact/signals@1.2.3_preact@10.19.5",
+      "npm:@preact/signals@^1.2.3": "npm:@preact/signals@1.2.3_preact@10.19.5",
       "npm:@ts-morph/bootstrap@0.22": "npm:@ts-morph/bootstrap@0.22.0",
       "npm:@types/node": "npm:@types/node@18.16.19",
       "npm:code-block-writer@^13.0.1": "npm:code-block-writer@13.0.1",
       "npm:msgpackr@1.10.1": "npm:msgpackr@1.10.1",
+      "npm:msgpackr@^1.10.1": "npm:msgpackr@1.10.1",
       "npm:preact": "npm:preact@10.19.5",
       "npm:preact@10.20.1": "npm:preact@10.20.1",
+      "npm:preact@^10.20.1": "npm:preact@10.20.1",
       "npm:zod": "npm:zod@3.22.4",
-      "npm:zod@3.22.4": "npm:zod@3.22.4"
+      "npm:zod@3.22.4": "npm:zod@3.22.4",
+      "npm:zod@^3.22.4": "npm:zod@3.22.4"
     },
     "jsr": {
       "@deno/cache-dir@0.8.0": {
