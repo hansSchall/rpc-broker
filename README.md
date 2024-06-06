@@ -1,4 +1,4 @@
-# RPC-Broker (WIP)
+# RPC-Broker
 
 RPC-Broker is a transport-layer-agnostic RPC communication library. Additionally to routing RPC calls it supports
 transmitting [Preact Signals](https://github.com/preactjs/signals) between the clients.
@@ -95,7 +95,7 @@ control, use `upgrade_websocket`. If you want to use a custom transport layer, r
 
 ## API
 
-// TODO
+https://jsr.io/@hansschall/rpc-broker/doc
 
 ## License
 
