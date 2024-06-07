@@ -167,6 +167,6 @@ export class RPCConnection {
             //
         }
         RPCMod.unsubscribeAll(this);
-        RPCSignal.drop_conn(this);
+        RPCSignal._drop_conn(this);
     }
 }

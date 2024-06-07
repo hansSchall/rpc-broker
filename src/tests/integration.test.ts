@@ -264,3 +264,52 @@ Deno.test("RPC Signal before connection", async () => {
     clientB.dispose();
     await wait(10);
 });
+
+Deno.test("Client reconnection", async () => {
+    const server = new RPCServer();
+    const clientA = new RPCClient();
+    const clientB = new RPCClient();
+    {
+        attach_direct(server, clientA);
+        const call = assertCall();
+        const recv = server.client.signal("foo");
+        recv.request();
+        const cleanup = effect(() => {
+            if (recv.value !== SIGNAL_INVALID) {
+                assertEquals(recv.value, 5);
+                call.call();
+            }
+        });
+
+        const send = signal(5);
+
+        clientA.signal("foo").transmit(send);
+
+        await call.finish();
+        clientA.dispose();
+        cleanup();
+    }
+    await wait(10);
+    {
+        attach_direct(server, clientB);
+        const call = assertCall();
+        const recv = server.client.signal("foo");
+        recv.request();
+        effect(() => {
+            if (recv.value !== SIGNAL_INVALID) {
+                assertEquals(recv.value, 6);
+                call.call();
+            }
+        });
+
+        const send = signal(6);
+
+        clientB.signal("foo").transmit(send);
+
+        await call.finish();
+        clientB.dispose();
+    }
+
+    server.dispose();
+    await wait(10);
+});

@@ -127,6 +127,7 @@ export class RPCHubSignal {
             mod.unsubscribe(conn);
             if (conn === mod.owner) {
                 mod.update(null);
+                mod.owner = null;
             }
         }
     }

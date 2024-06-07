@@ -131,11 +131,15 @@ export class RPCSignal {
             return sig;
         }
     }
-    public static drop_conn(conn: RPCConnection) {
+    /**
+     * @internal
+     */
+    public static _drop_conn(conn: RPCConnection) {
         for (const [, mod] of conn.server._signals) {
             mod.unsubscribe(conn);
             if (conn === mod.owner) {
                 mod.update(null);
+                mod.owner = null;
             }
         }
     }
